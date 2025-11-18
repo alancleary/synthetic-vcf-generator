@@ -20,15 +20,15 @@ bgzip = [
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
-[tool.pdm]
-distribution = true
-
 [project.scripts]
 "synthetic-vcf-generator" = "synthetic_vcf_generator.__main__:app"
 
 [dependency-groups]
 test = [
     "pytest>=9.0.1",
+]
+dev = [
+    "pre-commit>=4.4.0",
 ]
 
 [tool.pytest.ini_options]
@@ -37,3 +37,7 @@ markers = [
   "generate_vcf: generate vcf tests",
   "reference_import: reference import tests"
 ]
+
+[tool.pdm]
+distribution = true
+

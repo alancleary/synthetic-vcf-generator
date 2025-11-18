@@ -33,8 +33,17 @@ pdm run synthetic-vcf-generator --help
 
 ### Dependencies
 
-Currently only test dependencies are the only additional dependencies required for development.
-These can be installed with:
+To install all dependencies, including development and testing, run:
+```shell
+pdm install -G:all
+```
+
+To install only development dependencies, run:
+```shell
+pdm install -Gdev
+```
+
+To install only test dependencies, run:
 ```shell
 pdm install -Gtest
 ```
@@ -43,5 +52,13 @@ pdm install -Gtest
 
 Tests can be run with:
 ```shell
-pdm run pytest
+pytest
+```
+
+### Linting and Formatting
+
+Linting and formatting are automatically applied via [pre-commit](https://pre-commit.com/) hooks.
+These hooks can be run manually using:
+```shell
+pre-commit run --all-files
 ```
