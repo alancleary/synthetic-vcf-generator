@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import json
 import random
+import uuid
 from collections import deque
 from pathlib import Path
+from typing import Literal
 
 from synthetic_vcf_generator import vcf_reference, version
 
@@ -14,7 +16,8 @@ class VirtualVCF:
         num_rows: int,
         num_samples: int,
         chromosome: str,
-        sample_prefix: str | None = "SAMPLES",
+        sample_prefix: str | None = "sample_",
+        id_type: Literal["count", "padded_count", "uuid"] | None = "padded_count",
         random_seed: int | None = None,
         phased: bool | None = True,
         large_format: bool | None = True,
@@ -27,7 +30,8 @@ class VirtualVCF:
             num_rows (int): Number of rows.
             num_samples (int): Number of samples.
             chromosome (str): Chromosome identifier.
-            sample_prefix (str, optional): Prefix for sample names. Defaults to "SAMPLES".
+            sample_prefix (str, optional): Prefix for sample names. Defaults to "sample_".
+            id_type (str): Type of unique ID to use for samples.
             random_seed (int, optional): Random seed for reproducibility. Defaults to None.
             phased (bool, optional): Phased or unphased genotypes. Defaults to True.
             large_format (bool, optional): Use large format VCF. Defaults to True.
@@ -41,6 +45,7 @@ class VirtualVCF:
         self.num_samples = num_samples
         self.chromosome = chromosome
         self.sample_prefix = sample_prefix
+        self.id_type = id_type
         self.phased = phased
         # Use a per instance seed for reproducibility
         self.random = random.Random(random_seed)
@@ -195,7 +200,14 @@ class VirtualVCF:
 
         # Add sample names to the column list
         for i in range(1, self.num_samples + 1):
-            columns.append(f"{self.sample_prefix}{i:07d}")
+            if self.id_type == "count":
+                columns.append(f"{self.sample_prefix}{i}")
+            elif self.id_type == "padded_count":
+                columns.append(f"{self.sample_prefix}{i:07d}")
+            elif self.id_type == "uuid":
+                columns.append(f"{self.sample_prefix}{uuid.uuid4()}")
+            else:
+                raise ValueError(f"Unexpected sample ID type: {self.id_type=}")
 
         self.header += "\t".join(columns) + "\n"
 

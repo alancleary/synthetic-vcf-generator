@@ -61,6 +61,7 @@ def synthetic_vcf_data(
     chromosome,
     seed,
     sample_prefix,
+    id_type,
     phased,
     large_format,
     reference_dir_path,
@@ -75,6 +76,7 @@ def synthetic_vcf_data(
         chromosome (str): Chromosome identifier.
         seed (int): Random seed for reproducibility.
         sample_prefix (str): Prefix for sample names.
+        id_type (str): Type of unique ID to use for samples.
         phased (bool): Phased or unphased genotypes.
         large_format (bool): Use large format VCF.
         reference_dir_path (Path or None): Path to imported reference data.
@@ -84,6 +86,7 @@ def synthetic_vcf_data(
         num_samples=num_samples,
         chromosome=chromosome,
         sample_prefix=sample_prefix,
+        id_type=id_type,
         random_seed=seed,
         phased=phased,
         large_format=large_format,

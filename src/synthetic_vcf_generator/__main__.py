@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Literal
 
 import time
 from pathlib import Path
@@ -114,6 +114,12 @@ def main(
         "-p",
         help="Sample prefix ex: SAM =>  SAM0000001	SAM0000002",
     ),
+    id_type: Literal["count", "padded_count", "uuid"] = typer.Option(
+        "padded_count",
+        "--id_type",
+        "-i",
+        help="Type of unique ID to use for samples",
+    ),
     phased: bool = typer.Option(default=True, help="Simulate phased"),
     large_format: bool = typer.Option(default=True, help="Write large format vcf"),
     print_version: bool = typer.Option(
@@ -142,6 +148,7 @@ def main(
         chromosome (str): Chromosome identifier.
         seed (int): Random seed for reproducibility.
         sample_prefix (str): Prefix for sample names.
+        id_type (str): Type of unique ID to use for samples.
         phased (bool): Simulate phased genotypes.
         large_format (bool): Write large format VCF.
         print_version (bool): Flag to print the version of the synthetic-vcf-generator package.
@@ -154,6 +161,7 @@ def main(
         chromosome=chromosome,
         seed=seed,
         sample_prefix=sample_prefix,
+        id_type=id_type,
         phased=phased,
         large_format=large_format,
         reference_dir_path=reference_dir,
