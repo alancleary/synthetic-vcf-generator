@@ -4,16 +4,36 @@ version = "0.1.0"
 description = "A Python package for generating synthetic Variant Call Format (VCF) files"
 authors = [
     {name = "Alan Cleary"},
+    {name = "Magnus Wahlberg"},
 ]
-dependencies = []
+dependencies = ["typer>=0.20.0", "rich>=14.2.0", "tqdm>=4.67.1", "pyarrow>=22.0.0"]
 requires-python = ">=3.12"
 readme = "README.md"
 license = {text = "MIT"}
+
+[project.optional-dependencies]
+bgzip = [
+    "biopython>=1.86",
+]
 
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
-
 [tool.pdm]
 distribution = true
+
+[project.scripts]
+"synthetic-vcf-generator" = "synthetic_vcf_generator.__main__:app"
+
+[dependency-groups]
+test = [
+    "pytest>=9.0.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "generate_vcf: generate vcf tests",
+  "reference_import: reference import tests"
+]
