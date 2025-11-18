@@ -109,7 +109,7 @@ def main(
     ),
     seed: int = typer.Option(None, "--seed", help="Random seed to use, default none."),
     sample_prefix: str = typer.Option(
-        "S",
+        "sample_",
         "--sample_prefix",
         "-p",
         help="Sample prefix ex: SAM =>  SAM0000001	SAM0000002",
