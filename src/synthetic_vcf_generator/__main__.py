@@ -29,7 +29,9 @@ def version_callback(print_version: bool) -> None:
         Exit: If the print_version flag is set.
     """
     if print_version:
-        console.print(f"[yellow]synthetic-vcf-generator[/] version: [bold blue]{version}[/]")
+        console.print(
+            f"[yellow]synthetic-vcf-generator[/] version: [bold blue]{version}[/]"
+        )
         raise typer.Exit()
 
 

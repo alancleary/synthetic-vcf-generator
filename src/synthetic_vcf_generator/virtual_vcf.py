@@ -255,7 +255,6 @@ class VirtualVCF:
         return row
 
     def _setup_reference_data(self):
-
         if self.reference_dir:
             with open(
                 self.reference_dir / vcf_reference.METADATA_FILE_NAME

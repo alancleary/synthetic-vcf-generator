@@ -1,4 +1,4 @@
-""" A synthetic VCF file generator"""
+"""A synthetic VCF file generator"""
 
 from importlib import metadata as importlib_metadata
 

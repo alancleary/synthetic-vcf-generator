@@ -225,4 +225,6 @@ def test_import_reference(tmp_path):
     for seq_id, reference_path in metadata["reference_files"].items():
         assert (output_dir / reference_path).exists()
 
-    assert metadata["synthetic-vcf-generator-version"] == synthetic_vcf_generator.version
+    assert (
+        metadata["synthetic-vcf-generator-version"] == synthetic_vcf_generator.version
+    )

@@ -18,7 +18,9 @@ def to_std_out(virtual_vcf: VirtualVCF) -> None:
             sys.stdout.write(line)
 
 
-def to_vcf_file(virtual_vcf: VirtualVCF, synthetic_vcf_path: Path, num_rows: int) -> None:
+def to_vcf_file(
+    virtual_vcf: VirtualVCF, synthetic_vcf_path: Path, num_rows: int
+) -> None:
     """
     Writes VirtualVCF data to a VCF file.
 
@@ -42,9 +44,10 @@ def to_vcf_file(virtual_vcf: VirtualVCF, synthetic_vcf_path: Path, num_rows: int
                 gz_file.write(line)
     else:
         print("(No compression)")
-        with open(
-            synthetic_vcf_path, "w", encoding="utf-8"
-        ) as txt_file, virtual_vcf as v_vcf:
+        with (
+            open(synthetic_vcf_path, "w", encoding="utf-8") as txt_file,
+            virtual_vcf as v_vcf,
+        ):
             for line in tqdm.tqdm(v_vcf, total=num_rows + 1):
                 txt_file.write(line)
 
@@ -91,4 +94,8 @@ def synthetic_vcf_data(
         to_std_out(virtual_vcf=virtual_vcf)
         return
 
-    to_vcf_file(virtual_vcf=virtual_vcf, synthetic_vcf_path=synthetic_vcf_path, num_rows=num_rows)
+    to_vcf_file(
+        virtual_vcf=virtual_vcf,
+        synthetic_vcf_path=synthetic_vcf_path,
+        num_rows=num_rows,
+    )

@@ -26,7 +26,7 @@ def is_bgzip_compressed(file_path):
         magic_bytes = file.read(3)
 
     # Check if the magic bytes indicate bgzip compression
-    return magic_bytes == b"\x1F\x8B\x08"
+    return magic_bytes == b"\x1f\x8b\x08"
 
 
 script_dir = Path(__file__).resolve().parent

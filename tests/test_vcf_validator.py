@@ -31,9 +31,7 @@ def vcf_validator():  # pragma: no cover
         }
         vcf_validiator_dl_url = f"{base_url}/{dl_urls[system_platform]}"
 
-        urlretrieve(
-            vcf_validiator_dl_url, vcf_validator_path
-        )  # nosec CWE-22 should not be a problem
+        urlretrieve(vcf_validiator_dl_url, vcf_validator_path)  # nosec CWE-22 should not be a problem
         vcf_validator_path.chmod(vcf_validator_path.stat().st_mode | stat.S_IEXEC)
 
     return vcf_validator_path
