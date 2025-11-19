@@ -58,7 +58,7 @@ def synthetic_vcf_data(
     synthetic_vcf_path,
     num_rows,
     num_samples,
-    chromosome,
+    chromosomes,
     seed,
     sample_prefix,
     id_type,
@@ -71,9 +71,9 @@ def synthetic_vcf_data(
 
     Args:
         synthetic_vcf_path (Path or None): Path to the synthetic VCF file or None to write to standard output.
-        num_rows (int): Number of rows.
+        num_rows (int): Number of rows (variants) to generate per chromosome.
         num_samples (int): Number of samples.
-        chromosome (str): Chromosome identifier.
+        chromosomes (List[str]): List of chromosome IDs to include in the VCF.
         seed (int): Random seed for reproducibility.
         sample_prefix (str): Prefix for sample names.
         id_type (str): Type of unique ID to use for samples.
@@ -84,7 +84,7 @@ def synthetic_vcf_data(
     virtual_vcf = VirtualVCF(
         num_rows=num_rows,
         num_samples=num_samples,
-        chromosome=chromosome,
+        chromosomes=chromosomes,
         sample_prefix=sample_prefix,
         id_type=id_type,
         random_seed=seed,
@@ -97,8 +97,9 @@ def synthetic_vcf_data(
         to_std_out(virtual_vcf=virtual_vcf)
         return
 
+    total_num_rows = num_rows * len(chromosomes)
     to_vcf_file(
         virtual_vcf=virtual_vcf,
         synthetic_vcf_path=synthetic_vcf_path,
-        num_rows=num_rows,
+        num_rows=total_num_rows,
     )

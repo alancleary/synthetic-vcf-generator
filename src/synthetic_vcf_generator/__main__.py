@@ -99,13 +99,19 @@ def main(
         help="Path to synthetic vcf file. If the path ends with .gz the file will be gzipped.",
     ),
     num_rows: int = typer.Option(
-        10, "--num_rows", "-r", help="Nr rows to generate (variants)"
+        10,
+        "--num_rows",
+        "-r",
+        help="Number of rows (variants) to generate per chromosome",
     ),
     num_samples: int = typer.Option(
-        10, "--num_samples", "-s", help="Nr of num_samples to generate."
+        10, "--num_samples", "-s", help="Number of sample to generate."
     ),
-    chromosome: str = typer.Option(
-        "chr1", "--chromosome", "-c", help="chromosome default chr1"
+    chromosomes: str = typer.Option(
+        "chr1",
+        "--chromosomes",
+        "-c",
+        help="CSV list of chromosome IDs to include in the VCF",
     ),
     seed: int = typer.Option(None, "--seed", help="Random seed to use, default none."),
     sample_prefix: str = typer.Option(
@@ -143,9 +149,9 @@ def main(
 
     Args:
         synthetic_vcf_path (Path): Path to synthetic VCF file or None to write to standard output.
-        num_rows (int): Number of rows.
+        num_rows (int): Number of rows (variants) to generate per chromosome.
         num_samples (int): Number of samples.
-        chromosome (str): Chromosome identifier.
+        chromosomes (str): CSV list of chromosome IDs to include in the VCF.
         seed (int): Random seed for reproducibility.
         sample_prefix (str): Prefix for sample names.
         id_type (str): Type of unique ID to use for samples.
@@ -154,11 +160,12 @@ def main(
         print_version (bool): Flag to print the version of the synthetic-vcf-generator package.
         reference_dir (Path): Path to directory containing imported reference_data.
     """
+    chromosomes = chromosomes.split(",")
     synthetic_vcf_data(
         synthetic_vcf_path=synthetic_vcf_path,
         num_rows=num_rows,
         num_samples=num_samples,
-        chromosome=chromosome,
+        chromosomes=chromosomes,
         seed=seed,
         sample_prefix=sample_prefix,
         id_type=id_type,

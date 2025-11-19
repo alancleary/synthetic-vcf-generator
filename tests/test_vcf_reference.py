@@ -166,7 +166,7 @@ def test_parquet_reference():
         num_rows=row_count,
         num_samples=sample_count,
         random_seed=seed_value,
-        chromosome=chrom,
+        chromosomes=[chrom],
         reference_dir=reference_dir,
     )
     data_rows, metadata = get_vcf_data(virtual_vcf)
@@ -176,22 +176,24 @@ def test_parquet_reference():
     assert len(columns) - metadata_col_count == sample_count
 
 
-@pytest.mark.reference_import
-def test_parquet_reference_outside_reference():
-    chrom = "chr1"
-
-    reference_dir = test_data_dir / "reference/parquet"
-
-    seed_value = 42
-
-    with pytest.raises(ValueError):
-        VirtualVCF(
-            num_rows=100,
-            num_samples=10,
-            random_seed=seed_value,
-            chromosome=chrom,
-            reference_dir=reference_dir,
-        )
+# DEPRECATED: variant positions now fall within extent of chromosome
+# when using reference_dir
+# @pytest.mark.reference_import
+# def test_parquet_reference_outside_reference():
+#    chrom = "chr1"
+#
+#    reference_dir = test_data_dir / "reference/parquet"
+#
+#    seed_value = 42
+#
+#    with pytest.raises(ValueError):
+#        VirtualVCF(
+#            num_rows=100,
+#            num_samples=10,
+#            random_seed=seed_value,
+#            chromosomes=[chrom],
+#            reference_dir=reference_dir,
+#        )
 
 
 @pytest.mark.reference_import
@@ -207,7 +209,7 @@ def test_parquet_reference_not_in_reference():
             num_rows=100,
             num_samples=10,
             random_seed=seed_value,
-            chromosome=chrom,
+            chromosomes=[chrom],
             reference_dir=reference_dir,
         )
 

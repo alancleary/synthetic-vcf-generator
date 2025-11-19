@@ -37,7 +37,7 @@ def test_virtual_vcf_row_count(num_rows):
     virtual_vcf = VirtualVCF(
         num_rows=num_rows,
         num_samples=10,
-        chromosome="chr1",
+        chromosomes=["chr1"],
         sample_prefix="S",
         random_seed=42,
         phased=False,
@@ -77,7 +77,7 @@ def test_virtual_vcf_never_zero(num_rows, phased, large_format):
     virtual_vcf = VirtualVCF(
         num_rows=num_rows,
         num_samples=10,
-        chromosome="chr1",
+        chromosomes=["chr1"],
         sample_prefix="S",
         phased=phased,
         large_format=large_format,
@@ -114,7 +114,7 @@ def test_virtual_vcf_sample_count(num_samples, ref_dir):
     virtual_vcf = VirtualVCF(
         num_rows=10,
         num_samples=num_samples,
-        chromosome="chr1",
+        chromosomes=["chr1"],
         sample_prefix="S",
         random_seed=42,
         phased=False,
@@ -139,7 +139,7 @@ def test_invalid_sample_count(num_samples, ref_dir):
         VirtualVCF(
             num_rows=10,
             num_samples=num_samples,
-            chromosome="chr1",
+            chromosomes=["chr1"],
             sample_prefix="S",
             random_seed=42,
             phased=False,
@@ -160,7 +160,7 @@ def test_invalid_row_count(num_rows, ref_dir):
         VirtualVCF(
             num_rows=num_rows,
             num_samples=10,
-            chromosome="chr1",
+            chromosomes=["chr1"],
             sample_prefix="S",
             random_seed=42,
             phased=False,
@@ -193,7 +193,7 @@ def test_virtual_vcf_sample_prefix(num_samples, sample_prefix, expected, ref_dir
     virtual_vcf = VirtualVCF(
         num_rows=10,
         num_samples=num_samples,
-        chromosome="chr1",
+        chromosomes=["chr1"],
         sample_prefix=sample_prefix,
         random_seed=42,
         phased=False,
@@ -220,7 +220,7 @@ def test_virtual_vcf_chromosome(chromosome):
     virtual_vcf = VirtualVCF(
         num_rows=10,
         num_samples=10,
-        chromosome=chromosome,
+        chromosomes=[chromosome],
         sample_prefix="S",
         random_seed=42,
         phased=False,
@@ -243,7 +243,7 @@ def test_virtual_vcf_reproducibility(ref_dir):
         num_rows=10,
         num_samples=10,
         random_seed=seed_value,
-        chromosome="chr1",
+        chromosomes=["chr1"],
         reference_dir=ref_dir,
     )
 
@@ -251,7 +251,7 @@ def test_virtual_vcf_reproducibility(ref_dir):
         num_rows=10,
         num_samples=10,
         random_seed=seed_value,
-        chromosome="chr1",
+        chromosomes=["chr1"],
         reference_dir=ref_dir,
     )
 
@@ -273,7 +273,7 @@ def test_virtual_vcf_novel_data(ref_dir):
         num_rows=10,
         num_samples=10,
         random_seed=first_seed,
-        chromosome="chr1",
+        chromosomes=["chr1"],
         reference_dir=ref_dir,
     )
 
@@ -281,7 +281,7 @@ def test_virtual_vcf_novel_data(ref_dir):
         num_rows=10,
         num_samples=10,
         random_seed=second_seed,
-        chromosome="chr1",
+        chromosomes=["chr1"],
         reference_dir=ref_dir,
     )
 
