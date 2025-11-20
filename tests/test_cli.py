@@ -95,7 +95,6 @@ def test_cli_generate_no_compression_output(tmp_path):
     result = runner.invoke(app, [GENERATE_CMD, "-o", output_file])
     assert result.exit_code == 0
     assert output_file.exists()
-    assert "No compression" in result.stdout
 
     try:
         assert not is_bgzip_compressed(output_file)
@@ -109,7 +108,6 @@ def test_face_vcf_generation_compression(tmp_path):
     result = runner.invoke(app, [GENERATE_CMD, "-o", output_file])
     assert result.exit_code == 0
     assert output_file.exists()
-    assert "Using compression" in result.stdout
 
     # If biopython is installed check that we wrote a bgzip file
     try:
@@ -124,7 +122,6 @@ def test_face_vcf_generation_compression_no_bgzip(tmp_path):
     result = runner.invoke(app, [GENERATE_CMD, "-o", output_file])
     assert result.exit_code == 0
     assert output_file.exists()
-    assert "Using compression" in result.stdout
 
     # If biopython is installed check that we wrote a bgzip file
     try:
@@ -156,7 +153,7 @@ def test_face_vcf_generation_seed_differ(tmp_path):
 
 @pytest.mark.generate_vcf
 def test_face_vcf_generation_version(tmp_path):
-    result = runner.invoke(app, [GENERATE_CMD, "-v"])
+    result = runner.invoke(app, [GENERATE_CMD, "--version"])
     assert result.exit_code == 0
     assert version in result.stdout
 

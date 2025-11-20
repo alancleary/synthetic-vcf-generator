@@ -150,7 +150,7 @@ class VirtualVCF:
         ref, alt = self._get_ref_alt_at_position(position, reference_data)
         qual = f"{fastrand.pcg32randint(10, 100)}"
         # TODO: add support for other filters and make configurable via CLI
-        #filter = self.random.choice(["PASS"])
+        # filter = self.random.choice(["PASS"])
         filter = "PASS"
         # TODO: copmute these rather than using static values
         info = f"DP=10;AF=0.5;NS={self.num_samples}"
