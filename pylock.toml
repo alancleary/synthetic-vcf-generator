@@ -11,6 +11,25 @@ default-groups = ["default"]
 created-by = "pdm"
 
 [[packages]]
+name = "pre-commit"
+version = "4.4.0"
+requires-python = ">=3.10"
+sdist = {name = "pre_commit-4.4.0.tar.gz", url = "https://files.pythonhosted.org/packages/a6/49/7845c2d7bf6474efd8e27905b51b11e6ce411708c91e829b93f324de9929/pre_commit-4.4.0.tar.gz", hashes = {sha256 = "f0233ebab440e9f17cabbb558706eb173d19ace965c68cdce2c081042b4fab15"}}
+wheels = [
+    {name = "pre_commit-4.4.0-py2.py3-none-any.whl",url = "https://files.pythonhosted.org/packages/27/11/574fe7d13acf30bfd0a8dd7fa1647040f2b8064f13f43e8c963b1e65093b/pre_commit-4.4.0-py2.py3-none-any.whl",hashes = {sha256 = "b35ea52957cbf83dcc5d8ee636cbead8624e3a15fbfa61a370e42158ac8a5813"}},
+]
+marker = "\"dev\" in dependency_groups"
+
+[packages.tool.pdm]
+dependencies = [
+    "cfgv>=2.0.0",
+    "identify>=1.0.0",
+    "nodeenv>=0.11.1",
+    "pyyaml>=5.1",
+    "virtualenv>=20.10.0",
+]
+
+[[packages]]
 name = "pyarrow"
 version = "22.0.0"
 requires-python = ">=3.10"
@@ -128,23 +147,14 @@ dependencies = [
 ]
 
 [[packages]]
-name = "pre-commit"
-version = "4.4.0"
-requires-python = ">=3.10"
-sdist = {name = "pre_commit-4.4.0.tar.gz", url = "https://files.pythonhosted.org/packages/a6/49/7845c2d7bf6474efd8e27905b51b11e6ce411708c91e829b93f324de9929/pre_commit-4.4.0.tar.gz", hashes = {sha256 = "f0233ebab440e9f17cabbb558706eb173d19ace965c68cdce2c081042b4fab15"}}
-wheels = [
-    {name = "pre_commit-4.4.0-py2.py3-none-any.whl",url = "https://files.pythonhosted.org/packages/27/11/574fe7d13acf30bfd0a8dd7fa1647040f2b8064f13f43e8c963b1e65093b/pre_commit-4.4.0-py2.py3-none-any.whl",hashes = {sha256 = "b35ea52957cbf83dcc5d8ee636cbead8624e3a15fbfa61a370e42158ac8a5813"}},
-]
-marker = "\"dev\" in dependency_groups"
+name = "fastrand"
+version = "3.0.7"
+requires-python = ">=3.8"
+sdist = {name = "fastrand-3.0.7.tar.gz", url = "https://files.pythonhosted.org/packages/5b/63/5b5415c92f7bdf6179f8b9657b1eecb570c94f4a6d80011f7e6ed94ea165/fastrand-3.0.7.tar.gz", hashes = {sha256 = "82ae32282a77b4ea97b51b073869d7a933d54e259a257e25a14799d8cf3217d1"}}
+marker = "\"default\" in dependency_groups"
 
 [packages.tool.pdm]
-dependencies = [
-    "cfgv>=2.0.0",
-    "identify>=1.0.0",
-    "nodeenv>=0.11.1",
-    "pyyaml>=5.1",
-    "virtualenv>=20.10.0",
-]
+dependencies = []
 
 [[packages]]
 name = "pygments"
@@ -427,7 +437,7 @@ marker = "\"dev\" in dependency_groups"
 dependencies = []
 
 [tool.pdm]
-hashes = {sha256 = "2fbeda7b83a652cf0240e620f401cb361262837a903960dd18a4a1b728fa2ee6"}
+hashes = {sha256 = "a303c3baa544b59d7e30d0f5c549f473f7e42701e7fbcebb911c42d906671c2b"}
 strategy = ["inherit_metadata", "static_urls"]
 
 [[tool.pdm.targets]]

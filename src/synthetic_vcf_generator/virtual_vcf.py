@@ -7,6 +7,8 @@ from collections import deque
 from pathlib import Path
 from typing import List, Literal
 
+import fastrand
+
 from synthetic_vcf_generator import vcf_reference, version
 
 
@@ -56,6 +58,8 @@ class VirtualVCF:
         self.id_type = id_type
         self.phased = phased
         self.random = random.Random(random_seed)  # seed for reproducibility
+        if random_seed is not None:
+            fastrand.pcg32_seed(random_seed)
         self.large_format = large_format
         self.reference_dir = Path(reference_dir) if reference_dir else None
         self.reference_files = {}
@@ -125,15 +129,15 @@ class VirtualVCF:
         Retrieves the reference value at a given position if it exists in reference data
         or returns the allele at the given index.
         """
-        ref_index = self.random.randint(0, 3)
+        ref_index = fastrand.pcg32randint(0, 3)
         if reference_data:
             ref = vcf_reference.get_ref_at_pos(reference_data, position - 1)
         else:
             ref = self.alleles[ref_index]
         if ref in self.alleles:
-            alt = self.alleles[self.alleles.index(ref) - self.random.randint(1, 3)]
+            alt = self.alleles[self.alleles.index(ref) - fastrand.pcg32randint(1, 3)]
         else:
-            alt = self.alleles[ref_index - self.random.randint(1, 3)]
+            alt = self.alleles[ref_index - fastrand.pcg32randint(1, 3)]
         return ref, alt
 
     def _generate_vcf_row(self, chromosome, position, reference_data):
@@ -144,9 +148,10 @@ class VirtualVCF:
         # TODO: make ID strategy configurable via CLI
         vid = "."
         ref, alt = self._get_ref_alt_at_position(position, reference_data)
-        qual = f"{self.random.randint(10, 100)}"
+        qual = f"{fastrand.pcg32randint(10, 100)}"
         # TODO: add support for other filters and make configurable via CLI
-        filter = self.random.choice(["PASS"])
+        #filter = self.random.choice(["PASS"])
+        filter = "PASS"
         # TODO: copmute these rather than using static values
         info = f"DP=10;AF=0.5;NS={self.num_samples}"
         if self.large_format:
@@ -158,7 +163,7 @@ class VirtualVCF:
         max_rotation = (
             int(self.num_samples / 10) if self.num_samples >= 10 else self.num_samples
         )
-        self.available_samples.rotate(self.random.randint(1, max_rotation))
+        self.available_samples.rotate(fastrand.pcg32randint(1, max_rotation))
         samples = self.available_samples.copy()
 
         # Make the row

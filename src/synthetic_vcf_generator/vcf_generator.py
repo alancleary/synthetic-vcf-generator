@@ -81,6 +81,10 @@ def synthetic_vcf_data(
         large_format (bool): Use large format VCF.
         reference_dir_path (Path or None): Path to imported reference data.
     """
+    # Create and start the profiler
+    # profiler = cProfile.Profile()
+    # profiler.enable()
+
     virtual_vcf = VirtualVCF(
         num_rows=num_rows,
         num_samples=num_samples,
@@ -103,3 +107,12 @@ def synthetic_vcf_data(
         synthetic_vcf_path=synthetic_vcf_path,
         num_rows=total_num_rows,
     )
+
+    # Disable the profiler and print stats
+    # profiler.disable()
+
+    # Format and display the results
+    # s = io.StringIO()
+    # stats = pstats.Stats(profiler, stream=s).sort_stats('cumulative')
+    # stats.print_stats(20)  # Print top 20 functions
+    # print(s.getvalue())
