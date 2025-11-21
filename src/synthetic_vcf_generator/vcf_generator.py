@@ -3,7 +3,6 @@ import uuid
 import multiprocessing
 from pathlib import Path
 
-
 from synthetic_vcf_generator.virtual_vcf import VirtualVCF
 
 
@@ -19,16 +18,13 @@ def to_std_out(virtual_vcf: VirtualVCF) -> None:
             sys.stdout.write(line)
 
 
-def to_vcf_file(
-    virtual_vcf: VirtualVCF, synthetic_vcf_path: Path, num_rows: int
-) -> None:
+def to_vcf_file(virtual_vcf: VirtualVCF, synthetic_vcf_path: Path) -> None:
     """
     Writes VirtualVCF data to a VCF file.
 
     Args:
         virtual_vcf (VirtualVCF): VirtualVCF object containing the data.
         synthetic_vcf_path (Path): Path to the synthetic VCF file.
-        num_rows (int): Number of rows.
     """
     if synthetic_vcf_path.suffix == ".gz":
         try:
@@ -37,7 +33,6 @@ def to_vcf_file(
             import gzip as compressor
 
         with compressor.open(synthetic_vcf_path, "wt") as gz_file, virtual_vcf as v_vcf:
-            # for line in tqdm.tqdm(v_vcf, total=num_rows + 1):
             for line in v_vcf:
                 gz_file.write(line)
     else:
@@ -45,7 +40,6 @@ def to_vcf_file(
             open(synthetic_vcf_path, "w", encoding="utf-8") as txt_file,
             virtual_vcf as v_vcf,
         ):
-            # for line in tqdm.tqdm(v_vcf, total=num_rows + 1):
             for line in v_vcf:
                 txt_file.write(line)
 
@@ -77,10 +71,6 @@ def synthetic_vcf_data(
         large_format (bool): Use large format VCF.
         reference_dir_path (Path or None): Path to imported reference data.
     """
-    # Create and start the profiler
-    # profiler = cProfile.Profile()
-    # profiler.enable()
-
     virtual_vcf = VirtualVCF(
         num_rows=num_rows,
         num_samples=num_samples,
@@ -94,24 +84,9 @@ def synthetic_vcf_data(
     )
 
     if synthetic_vcf_path is None:
-        to_std_out(virtual_vcf=virtual_vcf)
-        return
-
-    total_num_rows = num_rows * len(chromosomes)
-    to_vcf_file(
-        virtual_vcf=virtual_vcf,
-        synthetic_vcf_path=synthetic_vcf_path,
-        num_rows=total_num_rows,
-    )
-
-    # Disable the profiler and print stats
-    # profiler.disable()
-
-    # Format and display the results
-    # s = io.StringIO()
-    # stats = pstats.Stats(profiler, stream=s).sort_stats('cumulative')
-    # stats.print_stats(20)  # Print top 20 functions
-    # print(s.getvalue())
+        to_std_out(virtual_vcf)
+    else:
+        to_vcf_file(virtual_vcf, synthetic_vcf_path)
 
 
 def batch_synthetic_vcf_data(
@@ -160,16 +135,10 @@ def batch_synthetic_vcf_data(
         reference_dir=reference_dir_path,
     )
 
-    total_num_rows = num_rows * len(chromosomes)
     results = []
     with multiprocessing.Pool(num_threads) as pool:
         for i in range(num_vcfs):
-            filename = f"{vcf_prefix}{uuid.uuid4()}.vcf"
-            kwargs = {
-                "virtual_vcf": virtual_vcf,
-                "synthetic_vcf_path": synthetic_vcf_dir / filename,
-                "num_rows": total_num_rows,
-            }
-            result = pool.apply_async(to_vcf_file, (), kwargs)
+            filepath = synthetic_vcf_dir / f"{vcf_prefix}{uuid.uuid4()}.vcf"
+            result = pool.apply_async(to_vcf_file, (virtual_vcf, filepath))
             results.append(result)
         [r.wait() for r in results]
