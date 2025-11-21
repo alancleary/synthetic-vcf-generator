@@ -1,96 +1,88 @@
 import json
+import mmap
 from pathlib import Path
-
-import pyarrow as pa
-import pyarrow.parquet as pq
-from tqdm import tqdm
 
 import synthetic_vcf_generator
 
 METADATA_FILE_NAME = "sequence_metadata.json"
 
 
-def get_ref_at_pos(ref_data: pa.array, position):
-    reference_value = ref_data.column(0)[position].as_py()
-    return reference_value
+class ReferenceData:
+    def __init__(self, reference_file):
+        self.reference_file = reference_file
+
+    def __enter__(self):
+        self.open()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+
+    def open(self):
+        self.file_obj = open(self.reference_file, mode="rb")
+        self.mmap_obj = mmap.mmap(
+            self.file_obj.fileno(), length=0, access=mmap.ACCESS_READ
+        )
+
+    def close(self):
+        self.mmap_obj.close()
+        self.file_obj.close()
+
+    def ref_length(self):
+        return self.mmap_obj.size()
+
+    def get_ref_at_pos(self, position):
+        return self.mmap_obj[position : position + 1].decode(encoding="utf-8")
 
 
-def load_reference_data(reference_file, memory_map):
-    reference_data = pq.read_table(reference_file, memory_map=memory_map)
-    return reference_data
+def load_reference_data(reference_file):
+    return ReferenceData(reference_file)
 
 
 def parse_fasta(file_path, include_sequences):
-    include_sequences = set(include_sequences) if include_sequences else None
-    sequences = []
-    with open(file_path) as fasta_file:
-        current_sequence = {"id": "", "sequence": []}
-
-        for line in tqdm(fasta_file):
+    include_ids = set(include_sequences) if include_sequences else None
+    parsed_ids = set()
+    current_id = ""
+    current_sequence = []
+    with open(file_path, encoding="utf-8") as fasta_file:
+        for line in fasta_file:
             line = line.strip()
-
-            if line.startswith(">"):  # New sequence header
-                if include_sequences is not None:
-                    parsed_sequences = {seq for seq in sequences}
-                    if parsed_sequences == include_sequences:
+            # New sequence header
+            if line.startswith(">"):
+                if current_id and (include_ids is None or current_id in include_ids):
+                    parsed_ids.add(current_id)
+                    yield {"id": current_id, "sequence": current_sequence}
+                    if include_ids is not None and parsed_ids == include_ids:
                         return
-
-                if current_sequence["id"] and (
-                    include_sequences is None
-                    or current_sequence["id"] in include_sequences
-                ):
-                    sequences.append(current_sequence["id"])
-                    yield current_sequence.copy()
-
-                current_sequence = {"id": line[1:].split(" ")[0], "sequence": []}
-
-            elif current_sequence["id"] and (
-                include_sequences is None or current_sequence["id"] in include_sequences
-            ):
-                current_sequence["sequence"].extend(line.upper())
-
+                current_id = line[1:].split(" ")[0]
+                current_sequence = []
+            elif current_id and (include_ids is None or current_id in include_ids):
+                current_sequence.extend(line.upper())
         # Add the last sequence in the file
-        if current_sequence["id"] and (
-            include_sequences is None or current_sequence["id"] in include_sequences
-        ):
-            sequences.append(current_sequence["id"])
-            yield current_sequence.copy()
+        if current_id and (include_ids is None or current_id in include_ids):
+            parsed_ids.add(current_id)
+            yield {"id": current_id, "sequence": current_sequence}
 
 
 def import_reference(file_path, output_dir, include_sequences=None):
     output_dir = Path(output_dir)
 
     if not output_dir.exists():
-        print(f"Creating output directory {output_dir}")
         output_dir.mkdir(parents=True)
-
-    if include_sequences:
-        print(f"Getting sequences from {file_path}\n including {include_sequences}")
-    else:
-        print(f"Getting all sequences from {file_path}")
 
     sequence_metadata_path = output_dir / METADATA_FILE_NAME
 
-    parsed_sequences = parse_fasta(file_path, include_sequences=include_sequences)
     sequence_metadata = {
         "reference_file": file_path.name,
         "synthetic-vcf-generator-version": synthetic_vcf_generator.version,
         "reference_files": {},
     }
 
-    for parsed_sequence in (pbar := tqdm(parsed_sequences)):
-        pbar.set_description(f"Processing {parsed_sequence['id']}")
-        parquet_file = output_dir / f"reference_{parsed_sequence['id']}.parquet"
-        sequence_metadata["reference_files"][parsed_sequence["id"]] = parquet_file.name
+    for parsed_sequence in parse_fasta(file_path, include_sequences=include_sequences):
+        seq_file = output_dir / f"reference_{parsed_sequence['id']}.seq"
+        sequence_metadata["reference_files"][parsed_sequence["id"]] = seq_file.name
+        with seq_file.open("w", encoding="utf-8") as file:
+            file.writelines(parsed_sequence["sequence"])
 
-        table_chr = pa.Table.from_arrays(
-            [pa.array(parsed_sequence["sequence"], pa.string())],
-            names=[parsed_sequence["id"]],
-        )
-        pq.write_table(table_chr, parquet_file, compression="zstd")
-
-    print(f"\nWriting sequence metadata to {sequence_metadata_path}")
     with open(sequence_metadata_path, "w") as metadata_file:
         json.dump(sequence_metadata, metadata_file, ensure_ascii=False, indent=4)
-
-    print("\nDONE!")

@@ -5,14 +5,14 @@ from typer.testing import CliRunner
 
 from synthetic_vcf_generator import version
 from synthetic_vcf_generator.__main__ import app
-from tests.test_virtual_vcf import NR_NON_SAMPLE_COL
+from tests.test_virtual_vcf import NUMBER_NON_SAMPLE_COL
 
 runner = CliRunner()
 
 GENERATE_CMD = "generate"
 IMPORT_REFERENCE_CMD = "import-reference"
 test_data_dir = Path(__file__).resolve().parent / "test_data"
-reference_dir = test_data_dir / "reference/parquet"
+reference_dir = test_data_dir / "reference/seq"
 
 
 def is_gz_file(filepath):
@@ -103,7 +103,7 @@ def test_cli_generate_no_compression_output(tmp_path):
 
 
 @pytest.mark.generate_vcf
-def test_face_vcf_generation_compression(tmp_path):
+def test_cli_generation_compression(tmp_path):
     output_file = tmp_path / "example.vcf.gz"
     result = runner.invoke(app, [GENERATE_CMD, "-o", output_file])
     assert result.exit_code == 0
@@ -117,7 +117,7 @@ def test_face_vcf_generation_compression(tmp_path):
 
 
 @pytest.mark.generate_vcf
-def test_face_vcf_generation_compression_no_bgzip(tmp_path):
+def test_cli_generation_compression_no_bgzip(tmp_path):
     output_file = tmp_path / "example.vcf.gz"
     result = runner.invoke(app, [GENERATE_CMD, "-o", output_file])
     assert result.exit_code == 0
@@ -131,7 +131,7 @@ def test_face_vcf_generation_compression_no_bgzip(tmp_path):
 
 
 @pytest.mark.generate_vcf
-def test_face_vcf_generation_seed_same(tmp_path):
+def test_cli_generation_seed_same(tmp_path):
     args = [GENERATE_CMD, "--seed", "42"]
 
     result_1 = runner.invoke(app, args)
@@ -142,7 +142,7 @@ def test_face_vcf_generation_seed_same(tmp_path):
 
 
 @pytest.mark.generate_vcf
-def test_face_vcf_generation_seed_differ(tmp_path):
+def test_cli_generation_seed_differ(tmp_path):
     base_args = [GENERATE_CMD, "--seed"]
     result_1 = runner.invoke(app, base_args + ["42"])
     result_2 = runner.invoke(app, base_args + ["1337"])
@@ -152,7 +152,7 @@ def test_face_vcf_generation_seed_differ(tmp_path):
 
 
 @pytest.mark.generate_vcf
-def test_face_vcf_generation_version(tmp_path):
+def test_cli_generation_version(tmp_path):
     result = runner.invoke(app, [GENERATE_CMD, "--version"])
     assert result.exit_code == 0
     assert version in result.stdout
@@ -165,7 +165,7 @@ def test_face_vcf_generation_version(tmp_path):
         *[(f"chr{c}",) for c in range(1, 22)],
     ],
 )
-def test_face_vcf_generation_chr_flag(chr):
+def test_cli_generation_chr_flag(chr):
     result = runner.invoke(app, [GENERATE_CMD, "-c", chr])
     assert result.exit_code == 0
     assert chr in result.stdout
@@ -182,7 +182,7 @@ def test_face_vcf_generation_chr_flag(chr):
         ("tapir",),
     ],
 )
-def test_face_vcf_generation_sample_prefix_flag(prefix):
+def test_cli_generation_sample_prefix_flag(prefix):
     result = runner.invoke(app, [GENERATE_CMD, "-p", prefix])
     assert result.exit_code == 0
     assert f"{prefix}0000" in result.stdout
@@ -195,7 +195,7 @@ def test_face_vcf_generation_sample_prefix_flag(prefix):
         *[(r,) for r in range(1, 100, 10)],
     ],
 )
-def test_face_vcf_generation_nr_rows(expected_rows):
+def test_cli_generation_number_rows(expected_rows):
     result = runner.invoke(app, [GENERATE_CMD, "-r", f"{expected_rows}"])
     row_count = len([r for r in result.stdout.split("\n") if r.startswith("chr1")])
     assert result.exit_code == 0
@@ -209,7 +209,7 @@ def test_face_vcf_generation_nr_rows(expected_rows):
         *[(r,) for r in range(1, 10, 1)],
     ],
 )
-def test_face_vcf_generation_nr_rows_with_reference(expected_rows):
+def test_cli_generation_number_rows_with_reference(expected_rows):
     result = runner.invoke(
         app, [GENERATE_CMD, "-r", f"{expected_rows}", "-f", f"{reference_dir}"]
     )
@@ -225,13 +225,13 @@ def test_face_vcf_generation_nr_rows_with_reference(expected_rows):
         *[(r,) for r in range(1, 100, 10)],
     ],
 )
-def test_face_vcf_generation_nr_samples(expected_sample_count):
+def test_cli_generation_number_samples(expected_sample_count):
     result = runner.invoke(app, [GENERATE_CMD, "-s", f"{expected_sample_count}"])
     sample_count = len(
         [r for r in result.stdout.split("\n") if r.startswith("chr1")][0].split("\t")
     )
     assert result.exit_code == 0
-    assert sample_count == expected_sample_count + NR_NON_SAMPLE_COL
+    assert sample_count == expected_sample_count + NUMBER_NON_SAMPLE_COL
 
 
 @pytest.mark.generate_vcf
@@ -241,7 +241,7 @@ def test_face_vcf_generation_nr_samples(expected_sample_count):
         *[(r,) for r in range(1, 100, 10)],
     ],
 )
-def test_face_vcf_generation_nr_samples_with_reference(expected_sample_count):
+def test_cli_generation_number_samples_with_reference(expected_sample_count):
     result = runner.invoke(
         app, [GENERATE_CMD, "-s", f"{expected_sample_count}", "-f", f"{reference_dir}"]
     )
@@ -249,4 +249,4 @@ def test_face_vcf_generation_nr_samples_with_reference(expected_sample_count):
         [r for r in result.stdout.split("\n") if r.startswith("chr1")][0].split("\t")
     )
     assert result.exit_code == 0
-    assert sample_count == expected_sample_count + NR_NON_SAMPLE_COL
+    assert sample_count == expected_sample_count + NUMBER_NON_SAMPLE_COL

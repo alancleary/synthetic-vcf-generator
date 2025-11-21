@@ -1,0 +1,16 @@
+{
+  "source_reference_file": "test-reference.fa",
+  "synthetic-vcf-generator-version": "0.1.0",
+  "reference_files": {
+    "chr1": "fasta_chr1.seq",
+    "chr2": "fasta_chr2.seq",
+    "chr3": "fasta_chr3.seq",
+    "chr4": "fasta_chr4.seq",
+    "chr5": "fasta_chr5.seq",
+    "chr6": "fasta_chr6.seq",
+    "chr7": "fasta_chr7.seq",
+    "chr8": "fasta_chr8.seq",
+    "chr9": "fasta_chr9.seq",
+    "chr10": "fasta_chr10.seq"
+  }
+}

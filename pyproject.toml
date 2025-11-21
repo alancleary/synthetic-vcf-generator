@@ -6,7 +6,7 @@ authors = [
     {name = "Alan Cleary"},
     {name = "Magnus Wahlberg"},
 ]
-dependencies = ["typer>=0.20.0", "rich>=14.2.0", "tqdm>=4.67.1", "pyarrow>=22.0.0", "fastrand>=3.0.7", "biopython>=1.86"]
+dependencies = ["typer>=0.20.0", "rich>=14.2.0", "fastrand>=3.0.7", "biopython>=1.86"]
 requires-python = ">=3.12"
 readme = "README.md"
 license = {text = "MIT"}

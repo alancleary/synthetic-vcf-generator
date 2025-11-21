@@ -6,7 +6,7 @@ import pytest
 
 from synthetic_vcf_generator.virtual_vcf import VirtualVCF
 
-NR_NON_SAMPLE_COL = 9
+NUMBER_NON_SAMPLE_COL = 9
 
 test_data_dir = Path(__file__).resolve().parent / "test_data"
 reference_dir = test_data_dir / "reference"
@@ -103,11 +103,11 @@ def test_virtual_vcf_never_zero(num_rows, phased, large_format):
         (50, None),
         (1000, None),
         (1337, None),
-        *[(s, reference_dir / "parquet") for s in range(1, 11)],
-        (20, reference_dir / "parquet"),
-        (50, reference_dir / "parquet"),
-        (1000, reference_dir / "parquet"),
-        (1337, reference_dir / "parquet"),
+        *[(s, reference_dir / "seq") for s in range(1, 11)],
+        (20, reference_dir / "seq"),
+        (50, reference_dir / "seq"),
+        (1000, reference_dir / "seq"),
+        (1337, reference_dir / "seq"),
     ],
 )
 def test_virtual_vcf_sample_count(num_samples, ref_dir):
@@ -123,7 +123,7 @@ def test_virtual_vcf_sample_count(num_samples, ref_dir):
 
     data_rows, metadata = get_vcf_data(virtual_vcf=virtual_vcf)
     samples = data_rows[0].split("\t")
-    assert len(samples) - NR_NON_SAMPLE_COL == num_samples
+    assert len(samples) - NUMBER_NON_SAMPLE_COL == num_samples
 
 
 @pytest.mark.generate_vcf
@@ -131,7 +131,7 @@ def test_virtual_vcf_sample_count(num_samples, ref_dir):
     ("num_samples", "ref_dir"),
     [
         *[(s, None) for s in range(-10, 1)],
-        *[(s, reference_dir / "parquet") for s in range(-10, 1)],
+        *[(s, reference_dir / "seq") for s in range(-10, 1)],
     ],
 )
 def test_invalid_sample_count(num_samples, ref_dir):
@@ -152,7 +152,7 @@ def test_invalid_sample_count(num_samples, ref_dir):
     ("num_rows", "ref_dir"),
     [
         *[(r, None) for r in range(-10, 1)],
-        *[(r, reference_dir / "parquet") for r in range(-10, 1)],
+        *[(r, reference_dir / "seq") for r in range(-10, 1)],
     ],
 )
 def test_invalid_row_count(num_rows, ref_dir):
@@ -177,16 +177,16 @@ def test_invalid_row_count(num_rows, ref_dir):
         (3, "SAM", ["SAM0000001", "SAM0000002", "SAM0000003"], None),
         (9, "SAM", [f"SAM000000{i}" for i in range(1, 10)], None),
         (9, "", [f"000000{i}" for i in range(1, 10)], None),
-        (1, "SAM", ["SAM0000001"], reference_dir / "parquet"),
-        (2, "SAM", ["SAM0000001", "SAM0000002"], reference_dir / "parquet"),
+        (1, "SAM", ["SAM0000001"], reference_dir / "seq"),
+        (2, "SAM", ["SAM0000001", "SAM0000002"], reference_dir / "seq"),
         (
             3,
             "SAM",
             ["SAM0000001", "SAM0000002", "SAM0000003"],
-            reference_dir / "parquet",
+            reference_dir / "seq",
         ),
-        (9, "SAM", [f"SAM000000{i}" for i in range(1, 10)], reference_dir / "parquet"),
-        (9, "", [f"000000{i}" for i in range(1, 10)], reference_dir / "parquet"),
+        (9, "SAM", [f"SAM000000{i}" for i in range(1, 10)], reference_dir / "seq"),
+        (9, "", [f"000000{i}" for i in range(1, 10)], reference_dir / "seq"),
     ],
 )
 def test_virtual_vcf_sample_prefix(num_samples, sample_prefix, expected, ref_dir):
@@ -202,7 +202,7 @@ def test_virtual_vcf_sample_prefix(num_samples, sample_prefix, expected, ref_dir
 
     data_rows, metadata = get_vcf_data(virtual_vcf=virtual_vcf)
     header_row = metadata.split("\n")[-2]
-    sample_names = header_row.split("\t")[NR_NON_SAMPLE_COL:]
+    sample_names = header_row.split("\t")[NUMBER_NON_SAMPLE_COL:]
     assert sample_names == expected
 
 
@@ -235,7 +235,7 @@ def test_virtual_vcf_chromosome(chromosome):
 # @pytest.mark.generate_vcf
 # @pytest.mark.parametrize(
 #    "ref_dir",
-#    [(None), (reference_dir / "parquet")],
+#    [(None), (reference_dir / "seq")],
 # )
 # def test_virtual_vcf_reproducibility(ref_dir):
 #    seed_value = 42
@@ -264,7 +264,7 @@ def test_virtual_vcf_chromosome(chromosome):
 @pytest.mark.generate_vcf
 @pytest.mark.parametrize(
     "ref_dir",
-    [(None), (reference_dir / "parquet")],
+    [(None), (reference_dir / "seq")],
 )
 def test_virtual_vcf_novel_data(ref_dir):
     first_seed = 42

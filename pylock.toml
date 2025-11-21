@@ -11,152 +11,6 @@ default-groups = ["default"]
 created-by = "pdm"
 
 [[packages]]
-name = "fastrand"
-version = "3.0.7"
-requires-python = ">=3.8"
-sdist = {name = "fastrand-3.0.7.tar.gz", url = "https://files.pythonhosted.org/packages/5b/63/5b5415c92f7bdf6179f8b9657b1eecb570c94f4a6d80011f7e6ed94ea165/fastrand-3.0.7.tar.gz", hashes = {sha256 = "82ae32282a77b4ea97b51b073869d7a933d54e259a257e25a14799d8cf3217d1"}}
-marker = "\"default\" in dependency_groups"
-
-[packages.tool.pdm]
-dependencies = []
-
-[[packages]]
-name = "pre-commit"
-version = "4.4.0"
-requires-python = ">=3.10"
-sdist = {name = "pre_commit-4.4.0.tar.gz", url = "https://files.pythonhosted.org/packages/a6/49/7845c2d7bf6474efd8e27905b51b11e6ce411708c91e829b93f324de9929/pre_commit-4.4.0.tar.gz", hashes = {sha256 = "f0233ebab440e9f17cabbb558706eb173d19ace965c68cdce2c081042b4fab15"}}
-wheels = [
-    {name = "pre_commit-4.4.0-py2.py3-none-any.whl",url = "https://files.pythonhosted.org/packages/27/11/574fe7d13acf30bfd0a8dd7fa1647040f2b8064f13f43e8c963b1e65093b/pre_commit-4.4.0-py2.py3-none-any.whl",hashes = {sha256 = "b35ea52957cbf83dcc5d8ee636cbead8624e3a15fbfa61a370e42158ac8a5813"}},
-]
-marker = "\"dev\" in dependency_groups"
-
-[packages.tool.pdm]
-dependencies = [
-    "cfgv>=2.0.0",
-    "identify>=1.0.0",
-    "nodeenv>=0.11.1",
-    "pyyaml>=5.1",
-    "virtualenv>=20.10.0",
-]
-
-[[packages]]
-name = "pyarrow"
-version = "22.0.0"
-requires-python = ">=3.10"
-sdist = {name = "pyarrow-22.0.0.tar.gz", url = "https://files.pythonhosted.org/packages/30/53/04a7fdc63e6056116c9ddc8b43bc28c12cdd181b85cbeadb79278475f3ae/pyarrow-22.0.0.tar.gz", hashes = {sha256 = "3d600dc583260d845c7d8a6db540339dd883081925da2bd1c5cb808f720b3cd9"}}
-wheels = [
-    {name = "pyarrow-22.0.0-cp314-cp314-macosx_12_0_arm64.whl",url = "https://files.pythonhosted.org/packages/bd/b0/0fa4d28a8edb42b0a7144edd20befd04173ac79819547216f8a9f36f9e50/pyarrow-22.0.0-cp314-cp314-macosx_12_0_arm64.whl",hashes = {sha256 = "9bddc2cade6561f6820d4cd73f99a0243532ad506bc510a75a5a65a522b2d74d"}},
-    {name = "pyarrow-22.0.0-cp314-cp314-macosx_12_0_x86_64.whl",url = "https://files.pythonhosted.org/packages/0f/a8/7a719076b3c1be0acef56a07220c586f25cd24de0e3f3102b438d18ae5df/pyarrow-22.0.0-cp314-cp314-macosx_12_0_x86_64.whl",hashes = {sha256 = "e70ff90c64419709d38c8932ea9fe1cc98415c4f87ea8da81719e43f02534bc9"}},
-    {name = "pyarrow-22.0.0-cp314-cp314-manylinux_2_28_aarch64.whl",url = "https://files.pythonhosted.org/packages/89/3c/359ed54c93b47fb6fe30ed16cdf50e3f0e8b9ccfb11b86218c3619ae50a8/pyarrow-22.0.0-cp314-cp314-manylinux_2_28_aarch64.whl",hashes = {sha256 = "92843c305330aa94a36e706c16209cd4df274693e777ca47112617db7d0ef3d7"}},
-    {name = "pyarrow-22.0.0-cp314-cp314-manylinux_2_28_x86_64.whl",url = "https://files.pythonhosted.org/packages/55/fc/4945896cc8638536ee787a3bd6ce7cec8ec9acf452d78ec39ab328efa0a1/pyarrow-22.0.0-cp314-cp314-manylinux_2_28_x86_64.whl",hashes = {sha256 = "6dda1ddac033d27421c20d7a7943eec60be44e0db4e079f33cc5af3b8280ccde"}},
-    {name = "pyarrow-22.0.0-cp314-cp314-musllinux_1_2_aarch64.whl",url = "https://files.pythonhosted.org/packages/cd/5e/7cb7edeb2abfaa1f79b5d5eb89432356155c8426f75d3753cbcb9592c0fd/pyarrow-22.0.0-cp314-cp314-musllinux_1_2_aarch64.whl",hashes = {sha256 = "84378110dd9a6c06323b41b56e129c504d157d1a983ce8f5443761eb5256bafc"}},
-    {name = "pyarrow-22.0.0-cp314-cp314-musllinux_1_2_x86_64.whl",url = "https://files.pythonhosted.org/packages/88/c6/546baa7c48185f5e9d6e59277c4b19f30f48c94d9dd938c2a80d4d6b067c/pyarrow-22.0.0-cp314-cp314-musllinux_1_2_x86_64.whl",hashes = {sha256 = "854794239111d2b88b40b6ef92aa478024d1e5074f364033e73e21e3f76b25e0"}},
-    {name = "pyarrow-22.0.0-cp314-cp314-win_amd64.whl",url = "https://files.pythonhosted.org/packages/3c/79/755ff2d145aafec8d347bf18f95e4e81c00127f06d080135dfc86aea417c/pyarrow-22.0.0-cp314-cp314-win_amd64.whl",hashes = {sha256 = "b883fe6fd85adad7932b3271c38ac289c65b7337c2c132e9569f9d3940620730"}},
-    {name = "pyarrow-22.0.0-cp314-cp314t-macosx_12_0_arm64.whl",url = "https://files.pythonhosted.org/packages/0e/d2/237d75ac28ced3147912954e3c1a174df43a95f4f88e467809118a8165e0/pyarrow-22.0.0-cp314-cp314t-macosx_12_0_arm64.whl",hashes = {sha256 = "7a820d8ae11facf32585507c11f04e3f38343c1e784c9b5a8b1da5c930547fe2"}},
-    {name = "pyarrow-22.0.0-cp314-cp314t-macosx_12_0_x86_64.whl",url = "https://files.pythonhosted.org/packages/1e/2c/733dfffe6d3069740f98e57ff81007809067d68626c5faef293434d11bd6/pyarrow-22.0.0-cp314-cp314t-macosx_12_0_x86_64.whl",hashes = {sha256 = "c6ec3675d98915bf1ec8b3c7986422682f7232ea76cad276f4c8abd5b7319b70"}},
-    {name = "pyarrow-22.0.0-cp314-cp314t-manylinux_2_28_aarch64.whl",url = "https://files.pythonhosted.org/packages/7c/2b/29d6e3782dc1f299727462c1543af357a0f2c1d3c160ce199950d9ca51eb/pyarrow-22.0.0-cp314-cp314t-manylinux_2_28_aarch64.whl",hashes = {sha256 = "3e739edd001b04f654b166204fc7a9de896cf6007eaff33409ee9e50ceaff754"}},
-    {name = "pyarrow-22.0.0-cp314-cp314t-manylinux_2_28_x86_64.whl",url = "https://files.pythonhosted.org/packages/8d/42/aa9355ecc05997915af1b7b947a7f66c02dcaa927f3203b87871c114ba10/pyarrow-22.0.0-cp314-cp314t-manylinux_2_28_x86_64.whl",hashes = {sha256 = "7388ac685cab5b279a41dfe0a6ccd99e4dbf322edfb63e02fc0443bf24134e91"}},
-    {name = "pyarrow-22.0.0-cp314-cp314t-musllinux_1_2_aarch64.whl",url = "https://files.pythonhosted.org/packages/ee/62/45abedde480168e83a1de005b7b7043fd553321c1e8c5a9a114425f64842/pyarrow-22.0.0-cp314-cp314t-musllinux_1_2_aarch64.whl",hashes = {sha256 = "f633074f36dbc33d5c05b5dc75371e5660f1dbf9c8b1d95669def05e5425989c"}},
-    {name = "pyarrow-22.0.0-cp314-cp314t-musllinux_1_2_x86_64.whl",url = "https://files.pythonhosted.org/packages/84/e9/7878940a5b072e4f3bf998770acafeae13b267f9893af5f6d4ab3904b67e/pyarrow-22.0.0-cp314-cp314t-musllinux_1_2_x86_64.whl",hashes = {sha256 = "4c19236ae2402a8663a2c8f21f1870a03cc57f0bef7e4b6eb3238cc82944de80"}},
-    {name = "pyarrow-22.0.0-cp314-cp314t-win_amd64.whl",url = "https://files.pythonhosted.org/packages/7b/03/f335d6c52b4a4761bcc83499789a1e2e16d9d201a58c327a9b5cc9a41bd9/pyarrow-22.0.0-cp314-cp314t-win_amd64.whl",hashes = {sha256 = "0c34fe18094686194f204a3b1787a27456897d8a2d62caf84b61e8dfbc0252ae"}},
-    {name = "pyarrow-22.0.0-cp313-cp313-macosx_12_0_arm64.whl",url = "https://files.pythonhosted.org/packages/a6/d6/d0fac16a2963002fc22c8fa75180a838737203d558f0ed3b564c4a54eef5/pyarrow-22.0.0-cp313-cp313-macosx_12_0_arm64.whl",hashes = {sha256 = "e6e95176209257803a8b3d0394f21604e796dadb643d2f7ca21b66c9c0b30c9a"}},
-    {name = "pyarrow-22.0.0-cp313-cp313-macosx_12_0_x86_64.whl",url = "https://files.pythonhosted.org/packages/c6/9c/1d6357347fbae062ad3f17082f9ebc29cc733321e892c0d2085f42a2212b/pyarrow-22.0.0-cp313-cp313-macosx_12_0_x86_64.whl",hashes = {sha256 = "001ea83a58024818826a9e3f89bf9310a114f7e26dfe404a4c32686f97bd7901"}},
-    {name = "pyarrow-22.0.0-cp313-cp313-manylinux_2_28_aarch64.whl",url = "https://files.pythonhosted.org/packages/ff/c0/782344c2ce58afbea010150df07e3a2f5fdad299cd631697ae7bd3bac6e3/pyarrow-22.0.0-cp313-cp313-manylinux_2_28_aarch64.whl",hashes = {sha256 = "ce20fe000754f477c8a9125543f1936ea5b8867c5406757c224d745ed033e691"}},
-    {name = "pyarrow-22.0.0-cp313-cp313-manylinux_2_28_x86_64.whl",url = "https://files.pythonhosted.org/packages/1b/8b/5362443737a5307a7b67c1017c42cd104213189b4970bf607e05faf9c525/pyarrow-22.0.0-cp313-cp313-manylinux_2_28_x86_64.whl",hashes = {sha256 = "e0a15757fccb38c410947df156f9749ae4a3c89b2393741a50521f39a8cf202a"}},
-    {name = "pyarrow-22.0.0-cp313-cp313-musllinux_1_2_aarch64.whl",url = "https://files.pythonhosted.org/packages/69/4d/76e567a4fc2e190ee6072967cb4672b7d9249ac59ae65af2d7e3047afa3b/pyarrow-22.0.0-cp313-cp313-musllinux_1_2_aarch64.whl",hashes = {sha256 = "cedb9dd9358e4ea1d9bce3665ce0797f6adf97ff142c8e25b46ba9cdd508e9b6"}},
-    {name = "pyarrow-22.0.0-cp313-cp313-musllinux_1_2_x86_64.whl",url = "https://files.pythonhosted.org/packages/01/5e/5653f0535d2a1aef8223cee9d92944cb6bccfee5cf1cd3f462d7cb022790/pyarrow-22.0.0-cp313-cp313-musllinux_1_2_x86_64.whl",hashes = {sha256 = "252be4a05f9d9185bb8c18e83764ebcfea7185076c07a7a662253af3a8c07941"}},
-    {name = "pyarrow-22.0.0-cp313-cp313-win_amd64.whl",url = "https://files.pythonhosted.org/packages/2d/f8/1d0bd75bf9328a3b826e24a16e5517cd7f9fbf8d34a3184a4566ef5a7f29/pyarrow-22.0.0-cp313-cp313-win_amd64.whl",hashes = {sha256 = "a4893d31e5ef780b6edcaf63122df0f8d321088bb0dee4c8c06eccb1ca28d145"}},
-    {name = "pyarrow-22.0.0-cp313-cp313t-macosx_12_0_arm64.whl",url = "https://files.pythonhosted.org/packages/90/81/db56870c997805bf2b0f6eeeb2d68458bf4654652dccdcf1bf7a42d80903/pyarrow-22.0.0-cp313-cp313t-macosx_12_0_arm64.whl",hashes = {sha256 = "f7fe3dbe871294ba70d789be16b6e7e52b418311e166e0e3cba9522f0f437fb1"}},
-    {name = "pyarrow-22.0.0-cp313-cp313t-macosx_12_0_x86_64.whl",url = "https://files.pythonhosted.org/packages/1c/98/0727947f199aba8a120f47dfc229eeb05df15bcd7a6f1b669e9f882afc58/pyarrow-22.0.0-cp313-cp313t-macosx_12_0_x86_64.whl",hashes = {sha256 = "ba95112d15fd4f1105fb2402c4eab9068f0554435e9b7085924bcfaac2cc306f"}},
-    {name = "pyarrow-22.0.0-cp313-cp313t-manylinux_2_28_aarch64.whl",url = "https://files.pythonhosted.org/packages/96/b4/9babdef9c01720a0785945c7cf550e4acd0ebcd7bdd2e6f0aa7981fa85e2/pyarrow-22.0.0-cp313-cp313t-manylinux_2_28_aarch64.whl",hashes = {sha256 = "c064e28361c05d72eed8e744c9605cbd6d2bb7481a511c74071fd9b24bc65d7d"}},
-    {name = "pyarrow-22.0.0-cp313-cp313t-manylinux_2_28_x86_64.whl",url = "https://files.pythonhosted.org/packages/f8/ca/2f8804edd6279f78a37062d813de3f16f29183874447ef6d1aadbb4efa0f/pyarrow-22.0.0-cp313-cp313t-manylinux_2_28_x86_64.whl",hashes = {sha256 = "6f9762274496c244d951c819348afbcf212714902742225f649cf02823a6a10f"}},
-    {name = "pyarrow-22.0.0-cp313-cp313t-musllinux_1_2_aarch64.whl",url = "https://files.pythonhosted.org/packages/b9/f0/77aa5198fd3943682b2e4faaf179a674f0edea0d55d326d83cb2277d9363/pyarrow-22.0.0-cp313-cp313t-musllinux_1_2_aarch64.whl",hashes = {sha256 = "a9d9ffdc2ab696f6b15b4d1f7cec6658e1d788124418cb30030afbae31c64746"}},
-    {name = "pyarrow-22.0.0-cp313-cp313t-musllinux_1_2_x86_64.whl",url = "https://files.pythonhosted.org/packages/79/87/a1937b6e78b2aff18b706d738c9e46ade5bfcf11b294e39c87706a0089ac/pyarrow-22.0.0-cp313-cp313t-musllinux_1_2_x86_64.whl",hashes = {sha256 = "ec1a15968a9d80da01e1d30349b2b0d7cc91e96588ee324ce1b5228175043e95"}},
-    {name = "pyarrow-22.0.0-cp313-cp313t-win_amd64.whl",url = "https://files.pythonhosted.org/packages/60/ae/b5a5811e11f25788ccfdaa8f26b6791c9807119dffcf80514505527c384c/pyarrow-22.0.0-cp313-cp313t-win_amd64.whl",hashes = {sha256 = "bba208d9c7decf9961998edf5c65e3ea4355d5818dd6cd0f6809bec1afb951cc"}},
-    {name = "pyarrow-22.0.0-cp312-cp312-macosx_12_0_arm64.whl",url = "https://files.pythonhosted.org/packages/af/63/ba23862d69652f85b615ca14ad14f3bcfc5bf1b99ef3f0cd04ff93fdad5a/pyarrow-22.0.0-cp312-cp312-macosx_12_0_arm64.whl",hashes = {sha256 = "bea79263d55c24a32b0d79c00a1c58bb2ee5f0757ed95656b01c0fb310c5af3d"}},
-    {name = "pyarrow-22.0.0-cp312-cp312-macosx_12_0_x86_64.whl",url = "https://files.pythonhosted.org/packages/b1/d0/f9ad86fe809efd2bcc8be32032fa72e8b0d112b01ae56a053006376c5930/pyarrow-22.0.0-cp312-cp312-macosx_12_0_x86_64.whl",hashes = {sha256 = "12fe549c9b10ac98c91cf791d2945e878875d95508e1a5d14091a7aaa66d9cf8"}},
-    {name = "pyarrow-22.0.0-cp312-cp312-manylinux_2_28_aarch64.whl",url = "https://files.pythonhosted.org/packages/b4/a8/f910afcb14630e64d673f15904ec27dd31f1e009b77033c365c84e8c1e1d/pyarrow-22.0.0-cp312-cp312-manylinux_2_28_aarch64.whl",hashes = {sha256 = "334f900ff08ce0423407af97e6c26ad5d4e3b0763645559ece6fbf3747d6a8f5"}},
-    {name = "pyarrow-22.0.0-cp312-cp312-manylinux_2_28_x86_64.whl",url = "https://files.pythonhosted.org/packages/13/95/aec81f781c75cd10554dc17a25849c720d54feafb6f7847690478dcf5ef8/pyarrow-22.0.0-cp312-cp312-manylinux_2_28_x86_64.whl",hashes = {sha256 = "c6c791b09c57ed76a18b03f2631753a4960eefbbca80f846da8baefc6491fcfe"}},
-    {name = "pyarrow-22.0.0-cp312-cp312-musllinux_1_2_aarch64.whl",url = "https://files.pythonhosted.org/packages/bb/d4/74ac9f7a54cfde12ee42734ea25d5a3c9a45db78f9def949307a92720d37/pyarrow-22.0.0-cp312-cp312-musllinux_1_2_aarch64.whl",hashes = {sha256 = "c3200cb41cdbc65156e5f8c908d739b0dfed57e890329413da2748d1a2cd1a4e"}},
-    {name = "pyarrow-22.0.0-cp312-cp312-musllinux_1_2_x86_64.whl",url = "https://files.pythonhosted.org/packages/2e/71/fedf2499bf7a95062eafc989ace56572f3343432570e1c54e6599d5b88da/pyarrow-22.0.0-cp312-cp312-musllinux_1_2_x86_64.whl",hashes = {sha256 = "ac93252226cf288753d8b46280f4edf3433bf9508b6977f8dd8526b521a1bbb9"}},
-    {name = "pyarrow-22.0.0-cp312-cp312-win_amd64.whl",url = "https://files.pythonhosted.org/packages/68/ed/b202abd5a5b78f519722f3d29063dda03c114711093c1995a33b8e2e0f4b/pyarrow-22.0.0-cp312-cp312-win_amd64.whl",hashes = {sha256 = "44729980b6c50a5f2bfcc2668d36c569ce17f8b17bccaf470c4313dcbbf13c9d"}},
-]
-marker = "\"default\" in dependency_groups"
-
-[packages.tool.pdm]
-dependencies = []
-
-[[packages]]
-name = "pytest"
-version = "9.0.1"
-requires-python = ">=3.10"
-sdist = {name = "pytest-9.0.1.tar.gz", url = "https://files.pythonhosted.org/packages/07/56/f013048ac4bc4c1d9be45afd4ab209ea62822fb1598f40687e6bf45dcea4/pytest-9.0.1.tar.gz", hashes = {sha256 = "3e9c069ea73583e255c3b21cf46b8d3c56f6e3a1a8f6da94ccb0fcf57b9d73c8"}}
-wheels = [
-    {name = "pytest-9.0.1-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/0b/8b/6300fb80f858cda1c51ffa17075df5d846757081d11ab4aa35cef9e6258b/pytest-9.0.1-py3-none-any.whl",hashes = {sha256 = "67be0030d194df2dfa7b556f2e56fb3c3315bd5c8822c6951162b92b32ce7dad"}},
-]
-marker = "\"test\" in dependency_groups"
-
-[packages.tool.pdm]
-dependencies = [
-    "colorama>=0.4; sys_platform == \"win32\"",
-    "exceptiongroup>=1; python_version < \"3.11\"",
-    "iniconfig>=1.0.1",
-    "packaging>=22",
-    "pluggy<2,>=1.5",
-    "pygments>=2.7.2",
-    "tomli>=1; python_version < \"3.11\"",
-]
-
-[[packages]]
-name = "rich"
-version = "14.2.0"
-requires-python = ">=3.8.0"
-sdist = {name = "rich-14.2.0.tar.gz", url = "https://files.pythonhosted.org/packages/fb/d2/8920e102050a0de7bfabeb4c4614a49248cf8d5d7a8d01885fbb24dc767a/rich-14.2.0.tar.gz", hashes = {sha256 = "73ff50c7c0c1c77c8243079283f4edb376f0f6442433aecb8ce7e6d0b92d1fe4"}}
-wheels = [
-    {name = "rich-14.2.0-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/25/7a/b0178788f8dc6cafce37a212c99565fa1fe7872c70c6c9c1e1a372d9d88f/rich-14.2.0-py3-none-any.whl",hashes = {sha256 = "76bc51fe2e57d2b1be1f96c524b890b816e334ab4c1e45888799bfaab0021edd"}},
-]
-marker = "\"default\" in dependency_groups"
-
-[packages.tool.pdm]
-dependencies = [
-    "markdown-it-py>=2.2.0",
-    "pygments<3.0.0,>=2.13.0",
-]
-
-[[packages]]
-name = "tqdm"
-version = "4.67.1"
-requires-python = ">=3.7"
-sdist = {name = "tqdm-4.67.1.tar.gz", url = "https://files.pythonhosted.org/packages/a8/4b/29b4ef32e036bb34e4ab51796dd745cdba7ed47ad142a9f4a1eb8e0c744d/tqdm-4.67.1.tar.gz", hashes = {sha256 = "f8aef9c52c08c13a65f30ea34f4e5aac3fd1a34959879d7e59e63027286627f2"}}
-wheels = [
-    {name = "tqdm-4.67.1-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/d0/30/dc54f88dd4a2b5dc8a0279bdd7270e735851848b762aeb1c1184ed1f6b14/tqdm-4.67.1-py3-none-any.whl",hashes = {sha256 = "26445eca388f82e72884e0d580d5464cd801a3ea01e63e5601bdff9ba6a48de2"}},
-]
-marker = "\"default\" in dependency_groups"
-
-[packages.tool.pdm]
-dependencies = [
-    "colorama; platform_system == \"Windows\"",
-]
-
-[[packages]]
-name = "typer"
-version = "0.20.0"
-requires-python = ">=3.8"
-sdist = {name = "typer-0.20.0.tar.gz", url = "https://files.pythonhosted.org/packages/8f/28/7c85c8032b91dbe79725b6f17d2fffc595dff06a35c7a30a37bef73a1ab4/typer-0.20.0.tar.gz", hashes = {sha256 = "1aaf6494031793e4876fb0bacfa6a912b551cf43c1e63c800df8b1a866720c37"}}
-wheels = [
-    {name = "typer-0.20.0-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/78/64/7713ffe4b5983314e9d436a90d5bd4f63b6054e2aca783a3cfc44cb95bbf/typer-0.20.0-py3-none-any.whl",hashes = {sha256 = "5b463df6793ec1dca6213a3cf4c0f03bc6e322ac5e16e13ddd622a889489784a"}},
-]
-marker = "\"default\" in dependency_groups"
-
-[packages.tool.pdm]
-dependencies = [
-    "click>=8.0.0",
-    "typing-extensions>=3.7.4.3",
-    "shellingham>=1.3.0",
-    "rich>=10.11.0",
-]
-
-[[packages]]
 name = "biopython"
 version = "1.86"
 requires-python = ">=3.10"
@@ -198,6 +52,90 @@ marker = "\"default\" in dependency_groups"
 [packages.tool.pdm]
 dependencies = [
     "numpy",
+]
+
+[[packages]]
+name = "fastrand"
+version = "3.0.7"
+requires-python = ">=3.8"
+sdist = {name = "fastrand-3.0.7.tar.gz", url = "https://files.pythonhosted.org/packages/5b/63/5b5415c92f7bdf6179f8b9657b1eecb570c94f4a6d80011f7e6ed94ea165/fastrand-3.0.7.tar.gz", hashes = {sha256 = "82ae32282a77b4ea97b51b073869d7a933d54e259a257e25a14799d8cf3217d1"}}
+marker = "\"default\" in dependency_groups"
+
+[packages.tool.pdm]
+dependencies = []
+
+[[packages]]
+name = "pre-commit"
+version = "4.4.0"
+requires-python = ">=3.10"
+sdist = {name = "pre_commit-4.4.0.tar.gz", url = "https://files.pythonhosted.org/packages/a6/49/7845c2d7bf6474efd8e27905b51b11e6ce411708c91e829b93f324de9929/pre_commit-4.4.0.tar.gz", hashes = {sha256 = "f0233ebab440e9f17cabbb558706eb173d19ace965c68cdce2c081042b4fab15"}}
+wheels = [
+    {name = "pre_commit-4.4.0-py2.py3-none-any.whl",url = "https://files.pythonhosted.org/packages/27/11/574fe7d13acf30bfd0a8dd7fa1647040f2b8064f13f43e8c963b1e65093b/pre_commit-4.4.0-py2.py3-none-any.whl",hashes = {sha256 = "b35ea52957cbf83dcc5d8ee636cbead8624e3a15fbfa61a370e42158ac8a5813"}},
+]
+marker = "\"dev\" in dependency_groups"
+
+[packages.tool.pdm]
+dependencies = [
+    "cfgv>=2.0.0",
+    "identify>=1.0.0",
+    "nodeenv>=0.11.1",
+    "pyyaml>=5.1",
+    "virtualenv>=20.10.0",
+]
+
+[[packages]]
+name = "pytest"
+version = "9.0.1"
+requires-python = ">=3.10"
+sdist = {name = "pytest-9.0.1.tar.gz", url = "https://files.pythonhosted.org/packages/07/56/f013048ac4bc4c1d9be45afd4ab209ea62822fb1598f40687e6bf45dcea4/pytest-9.0.1.tar.gz", hashes = {sha256 = "3e9c069ea73583e255c3b21cf46b8d3c56f6e3a1a8f6da94ccb0fcf57b9d73c8"}}
+wheels = [
+    {name = "pytest-9.0.1-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/0b/8b/6300fb80f858cda1c51ffa17075df5d846757081d11ab4aa35cef9e6258b/pytest-9.0.1-py3-none-any.whl",hashes = {sha256 = "67be0030d194df2dfa7b556f2e56fb3c3315bd5c8822c6951162b92b32ce7dad"}},
+]
+marker = "\"test\" in dependency_groups"
+
+[packages.tool.pdm]
+dependencies = [
+    "colorama>=0.4; sys_platform == \"win32\"",
+    "exceptiongroup>=1; python_version < \"3.11\"",
+    "iniconfig>=1.0.1",
+    "packaging>=22",
+    "pluggy<2,>=1.5",
+    "pygments>=2.7.2",
+    "tomli>=1; python_version < \"3.11\"",
+]
+
+[[packages]]
+name = "rich"
+version = "14.2.0"
+requires-python = ">=3.8.0"
+sdist = {name = "rich-14.2.0.tar.gz", url = "https://files.pythonhosted.org/packages/fb/d2/8920e102050a0de7bfabeb4c4614a49248cf8d5d7a8d01885fbb24dc767a/rich-14.2.0.tar.gz", hashes = {sha256 = "73ff50c7c0c1c77c8243079283f4edb376f0f6442433aecb8ce7e6d0b92d1fe4"}}
+wheels = [
+    {name = "rich-14.2.0-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/25/7a/b0178788f8dc6cafce37a212c99565fa1fe7872c70c6c9c1e1a372d9d88f/rich-14.2.0-py3-none-any.whl",hashes = {sha256 = "76bc51fe2e57d2b1be1f96c524b890b816e334ab4c1e45888799bfaab0021edd"}},
+]
+marker = "\"default\" in dependency_groups"
+
+[packages.tool.pdm]
+dependencies = [
+    "markdown-it-py>=2.2.0",
+    "pygments<3.0.0,>=2.13.0",
+]
+
+[[packages]]
+name = "typer"
+version = "0.20.0"
+requires-python = ">=3.8"
+sdist = {name = "typer-0.20.0.tar.gz", url = "https://files.pythonhosted.org/packages/8f/28/7c85c8032b91dbe79725b6f17d2fffc595dff06a35c7a30a37bef73a1ab4/typer-0.20.0.tar.gz", hashes = {sha256 = "1aaf6494031793e4876fb0bacfa6a912b551cf43c1e63c800df8b1a866720c37"}}
+wheels = [
+    {name = "typer-0.20.0-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/78/64/7713ffe4b5983314e9d436a90d5bd4f63b6054e2aca783a3cfc44cb95bbf/typer-0.20.0-py3-none-any.whl",hashes = {sha256 = "5b463df6793ec1dca6213a3cf4c0f03bc6e322ac5e16e13ddd622a889489784a"}},
+]
+marker = "\"default\" in dependency_groups"
+
+[packages.tool.pdm]
+dependencies = [
+    "click>=8.0.0",
+    "typing-extensions>=3.7.4.3",
+    "shellingham>=1.3.0",
+    "rich>=10.11.0",
 ]
 
 [[packages]]
@@ -548,7 +486,7 @@ marker = "\"default\" in dependency_groups"
 dependencies = []
 
 [tool.pdm]
-hashes = {sha256 = "c089ff6b35a250240bb09769700bf672d0d4ebb3f94b96fef4dbe535850f99cc"}
+hashes = {sha256 = "21479ab5e0d797a043f4f500885f8325381c851f22b27425692cb037b8407fe5"}
 strategy = ["inherit_metadata", "static_urls"]
 
 [[tool.pdm.targets]]

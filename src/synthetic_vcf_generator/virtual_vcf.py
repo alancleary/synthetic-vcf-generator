@@ -135,7 +135,7 @@ class VirtualVCF:
         ref_index = fastrand.pcg32randint(0, 3)
         allele_index = fastrand.pcg32randint(1, 3)
         if reference_data:
-            ref = vcf_reference.get_ref_at_pos(reference_data, position - 1)
+            ref = reference_data.get_ref_at_pos(position - 1)
         else:
             ref = self.alleles[ref_index]
         if ref in self.alleles:
@@ -159,7 +159,6 @@ class VirtualVCF:
         # TODO: copmute info rather than using static values
 
         # Random select a sample rotation
-        # samples = self.sample_rotations[fastrand.pcg32bounded(self.max_rotation)]
         self.available_samples.rotate(fastrand.pcg32randint(1, self.max_rotation))
         samples = "\t".join(self.available_samples.copy())
 
@@ -276,13 +275,14 @@ class VirtualVCF:
             reference_data = None
             if self.reference_dir:
                 chromosome_file = self.reference_files[chromosome]
-                reference_data = vcf_reference.load_reference_data(
-                    chromosome_file, memory_map=False
-                )
-                chromosome_length = reference_data.shape[0]
+                reference_data = vcf_reference.load_reference_data(chromosome_file)
+                reference_data.open()
+                chromosome_length = reference_data.ref_length()
             # Generate and sort positions
             positions = self.random.sample(range(1, chromosome_length), self.num_rows)
             positions.sort()
             # Generate a VCF row for each position
             for p in positions:
                 yield self._generate_vcf_row(chromosome, p, reference_data)
+            if reference_data:
+                reference_data.close()
