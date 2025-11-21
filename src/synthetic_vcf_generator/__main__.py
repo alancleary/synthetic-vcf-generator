@@ -1,5 +1,6 @@
 from typing import List, Literal
 
+import importlib.util
 import os
 import time
 from pathlib import Path
@@ -37,6 +38,50 @@ def version_callback(print_version: bool) -> None:
             f"[yellow]synthetic-vcf-generator[/] version: [bold blue]{version}[/]"
         )
         raise typer.Exit()
+
+
+def parse_output_type(synthetic_vcf_path: Path | None, output_type: str | None):
+    """
+    Sets the output type and ensure it's compatible with the output file extension
+
+    Args:
+        synthetic_vcf_path (Path): Path to synthetic vcf file.
+        output_type (str): Type of output file.
+
+    Raises:
+        ValueError: If invalid output file extension.
+        ValueError: If output file extension and output type are incompatible.
+        ValueError: If bgzip is unavailable and output type is \"bgzip\".
+    """
+    if synthetic_vcf_path:
+        ext = synthetic_vcf_path.suffix
+        if ext not in {".vcf", ".gz"}:
+            raise ValueError('VCF path must have extension ".vcf" or ".gz"')
+        if output_type:
+            if output_type == "vcf" and ext == ".gz":
+                raise ValueError(
+                    'A VCF path with extension ".gz" cannot have output type "vcf"'
+                )
+        else:
+            if ext == ".vcf":
+                output_type = "vcf"
+            else:
+                try:
+                    importlib.util.find_spec("Bio")
+                    output_type = "bgzip"
+                except ImportError:
+                    output_type = "gzip"
+    elif output_type:
+        if output_type == "bgzip":
+            try:
+                importlib.util.find_spec("Bio")
+            except ImportError:
+                raise ValueError(
+                    'Output type "bgzip" requires Biopython optional dependency'
+                )
+    else:
+        output_type = "vcf"
+    return output_type
 
 
 @app.command(name="import-reference")
@@ -100,7 +145,13 @@ def main(
         None,
         "--synthetic_vcf_path",
         "-o",
-        help="Path to synthetic vcf file. If the path ends with .gz the file will be gzipped.",
+        help="Path to synthetic vcf file. Use -e to disambiguate .gz compression type.",
+    ),
+    output_type: Literal["vcf", "gzip", "bgzip"] = typer.Option(
+        None,
+        "--output_type",
+        "-e",
+        help="Type of output file.",
     ),
     num_rows: int = typer.Option(
         10,
@@ -152,6 +203,7 @@ def main(
 
     Args:
         synthetic_vcf_path (Path): Path to synthetic VCF file or None to write to standard output.
+        output_type (str): Type file to output ("vcp", "gzip", or "bgzip").
         num_rows (int): Number of rows (variants) to generate per chromosome.
         num_samples (int): Number of samples.
         chromosomes (str): CSV list of chromosome IDs to include in the VCF.
@@ -163,9 +215,11 @@ def main(
         print_version (bool): Flag to print the version of the synthetic-vcf-generator package.
         reference_dir (Path): Path to directory containing imported reference_data.
     """
+    output_type = parse_output_type(synthetic_vcf_path, output_type)
     chromosomes = chromosomes.split(",")
     synthetic_vcf_data(
         synthetic_vcf_path=synthetic_vcf_path,
+        output_type=output_type,
         num_rows=num_rows,
         num_samples=num_samples,
         chromosomes=chromosomes,
@@ -185,6 +239,12 @@ def generate_batch(
         "--output-directory",
         "-d",
         help="Path to the directory where output synthetic VCF files should be saved.",
+    ),
+    output_type: Literal["vcf", "gzip", "bgzip"] = typer.Option(
+        None,
+        "--output_type",
+        "-e",
+        help="Type of output file.",
     ),
     num_vcfs: int = typer.Option(
         10, "--num-vcfs", "-n", help="Number of VCF files to generate."
@@ -248,6 +308,7 @@ def generate_batch(
 
     Args:
         synthetic_vcf_dir (Path): Path to the directory where output synthetic VCF files should be saved.
+        output_type (str): Type file to output ("vcp", "gzip", or "bgzip").
         num_vcfs (int): Number of VCF files to generate.
         vcf_prefix (str): Prefix added to the filename of every generated VCF.
         num_rows (int): Number of rows (variants) to generate per chromosome.
@@ -255,16 +316,18 @@ def generate_batch(
         chromosomes (str): CSV list of chromosome IDs to include in the VCF.
         seed (int): Random seed for reproducibility.
         sample_prefix (str): Prefix for sample names.
-        id_type (str): Type of unique ID to use for samples.
+        id_type (str): Type of unique ID to use for samples ("count", "padded_count", or "uuid").
         phased (bool): Simulate phased genotypes.
         large_format (bool): Write large format VCF.
         print_version (bool): Flag to print the version of the synthetic-vcf-generator package.
         reference_dir (Path): Path to directory containing imported reference_data.
         num_threads (int): Number of threads.
     """
+    output_type = parse_output_type(None, output_type)
     chromosomes = chromosomes.split(",")
     batch_synthetic_vcf_data(
         synthetic_vcf_dir=synthetic_vcf_dir,
+        output_type=output_type,
         num_vcfs=num_vcfs,
         vcf_prefix=vcf_prefix,
         num_rows=num_rows,
