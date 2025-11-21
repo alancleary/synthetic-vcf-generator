@@ -53,6 +53,7 @@ class VirtualVCF:
 
         self.num_rows = num_rows
         self.num_samples = num_samples
+        self.max_rotation = num_samples // 10 if num_samples >= 10 else num_samples
         self.chromosomes = chromosomes
         self.sample_prefix = sample_prefix
         self.id_type = id_type
@@ -61,6 +62,8 @@ class VirtualVCF:
         if random_seed is not None:
             fastrand.pcg32_seed(random_seed)
         self.large_format = large_format
+        self.fmt = "GT:AD:DP:GQ:PL" if large_format else "GT"
+        self.info = f"DP=10;AF=0.5;NS={num_samples}"
         self.reference_dir = Path(reference_dir) if reference_dir else None
         self.reference_files = {}
         self.reference_metadata = {}
@@ -130,14 +133,15 @@ class VirtualVCF:
         or returns the allele at the given index.
         """
         ref_index = fastrand.pcg32randint(0, 3)
+        allele_index = fastrand.pcg32randint(1, 3)
         if reference_data:
             ref = vcf_reference.get_ref_at_pos(reference_data, position - 1)
         else:
             ref = self.alleles[ref_index]
         if ref in self.alleles:
-            alt = self.alleles[self.alleles.index(ref) - fastrand.pcg32randint(1, 3)]
+            alt = self.alleles[self.alleles.index(ref) - allele_index]
         else:
-            alt = self.alleles[ref_index - fastrand.pcg32randint(1, 3)]
+            alt = self.alleles[ref_index - allele_index]
         return ref, alt
 
     def _generate_vcf_row(self, chromosome, position, reference_data):
@@ -152,29 +156,16 @@ class VirtualVCF:
         # TODO: add support for other filters and make configurable via CLI
         # filter = self.random.choice(["PASS"])
         filter = "PASS"
-        # TODO: copmute these rather than using static values
-        info = f"DP=10;AF=0.5;NS={self.num_samples}"
-        if self.large_format:
-            fmt = "GT:AD:DP:GQ:PL"
-        else:
-            fmt = "GT"
+        # TODO: copmute info rather than using static values
 
-        # Generate random values for each sample by rotating the sample list randomly
-        max_rotation = (
-            int(self.num_samples / 10) if self.num_samples >= 10 else self.num_samples
-        )
-        self.available_samples.rotate(fastrand.pcg32randint(1, max_rotation))
-        samples = self.available_samples.copy()
+        # Random select a sample rotation
+        # samples = self.sample_rotations[fastrand.pcg32bounded(self.max_rotation)]
+        self.available_samples.rotate(fastrand.pcg32randint(1, self.max_rotation))
+        samples = "\t".join(self.available_samples.copy())
 
         # Make the row
-        row = (
-            "\t".join(
-                (chromosome, str(position), vid, ref, alt, qual, filter, info, fmt)
-            )
-            + "\t"
-            + "\t".join(samples)
-            + "\n"
-        )
+        row = f"{chromosome}\t{position}\t{vid}\t{ref}\t{alt}\t{qual}\t{filter}\t{self.info}\t{self.fmt}\t{samples}\n"
+
         return row
 
     def _setup_reference_data(self):
@@ -236,6 +227,12 @@ class VirtualVCF:
                 k=self.num_samples,
             )
         )
+        # Generate sample rotations for later random selection
+        # self.sample_rotations = []
+        # rotation = self.available_samples.copy()
+        # for i in range(self.max_rotation):
+        #     rotation.rotate(1)
+        #     self.sample_rotations.append("\t".join(rotation))
 
         # Check so that at lest one sample in avail_samples is not 0|0 or 0/0
         if all(
