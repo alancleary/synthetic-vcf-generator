@@ -164,6 +164,9 @@ def batch_synthetic_vcf_data(
         num_threads (int): Number of threads.
     """
 
+    if not synthetic_vcf_dir.exists():
+        synthetic_vcf_dir.mkdir(parents=True)
+
     virtual_vcf = VirtualVCF(
         num_rows=num_rows,
         num_samples=num_samples,
