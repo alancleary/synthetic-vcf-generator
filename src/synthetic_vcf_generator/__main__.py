@@ -94,7 +94,7 @@ def vcf_reference_import(
     ),
     included_chromosomes: str = typer.Option(
         None,
-        "--included_chromosomes",
+        "--included-chromosomes",
         "-c",
         help="CSV list of chromosomes to extract from reference, if not specified all will be imported",
     ),
@@ -144,24 +144,24 @@ def vcf_reference_import(
 def main(
     synthetic_vcf_path: Path = typer.Option(
         None,
-        "--synthetic_vcf_path",
+        "--synthetic-vcf_path",
         "-o",
         help="Path to synthetic vcf file. Use -e to disambiguate .gz compression type.",
     ),
     output_type: Literal["vcf", "gzip", "bgzip"] = typer.Option(
         None,
-        "--output_type",
+        "--output-type",
         "-e",
         help="Type of output file.",
     ),
     num_rows: int = typer.Option(
         10,
-        "--num_rows",
+        "--num-rows",
         "-r",
         help="Number of rows (variants) to generate per chromosome",
     ),
     num_samples: int = typer.Option(
-        10, "--num_samples", "-s", help="Number of sample to generate."
+        10, "--num-samples", "-s", help="Number of sample to generate."
     ),
     chromosomes: str = typer.Option(
         "chr1",
@@ -172,13 +172,13 @@ def main(
     seed: int = typer.Option(None, "--seed", help="Random seed to use, default none."),
     sample_prefix: str = typer.Option(
         "sample_",
-        "--sample_prefix",
+        "--sample-prefix",
         "-p",
         help="Sample prefix, e.g. SAM => SAM0000001 SAM0000002",
     ),
     id_type: Literal["count", "padded_count", "uuid"] = typer.Option(
         "padded_count",
-        "--id_type",
+        "--id-type",
         "-i",
         help="Type of unique ID to use for samples",
     ),
@@ -243,7 +243,7 @@ def generate_batch(
     ),
     output_type: Literal["vcf", "gzip", "bgzip"] = typer.Option(
         None,
-        "--output_type",
+        "--output-type",
         "-e",
         help="Type of output file.",
     ),
@@ -253,17 +253,17 @@ def generate_batch(
     vcf_prefix: str = typer.Option(
         "",
         "-v",
-        "--vcf_prefix",
+        "--vcf-prefix",
         help="VCF file prefix, e.g.: GRCh38.p14_ => GRCh38.p14_293439a-5334-431d-b2ab-0f831463fada.vcf",
     ),
     num_rows: int = typer.Option(
         10,
-        "--num_rows",
+        "--num-rows",
         "-r",
         help="Number of rows (variants) to generate per chromosome",
     ),
     num_samples: int = typer.Option(
-        10, "--num_samples", "-s", help="Number of sample to generate."
+        10, "--num-samples", "-s", help="Number of sample to generate."
     ),
     chromosomes: str = typer.Option(
         "chr1",
@@ -274,13 +274,13 @@ def generate_batch(
     seed: int = typer.Option(None, "--seed", help="Random seed to use, default none."),
     sample_prefix: str = typer.Option(
         "sample_",
-        "--sample_prefix",
+        "--sample-prefix",
         "-p",
         help="Sample prefix, e.g. SAM => SAM0000001 SAM0000002",
     ),
     id_type: Literal["count", "padded_count", "uuid"] = typer.Option(
         "padded_count",
-        "--id_type",
+        "--id-type",
         "-i",
         help="Type of unique ID to use for samples",
     ),

@@ -73,7 +73,7 @@ def test_cli_reference_import_input_output_incl_chrom(tmp_path):
         app,
         [
             IMPORT_REFERENCE_CMD,
-            "--included_chromosomes",
+            "--included-chromosomes",
             "chr1",
             small_reference_path.as_posix(),
             tmp_path.as_posix(),
