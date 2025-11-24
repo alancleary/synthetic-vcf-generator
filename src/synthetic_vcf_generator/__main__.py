@@ -1,4 +1,4 @@
-from typing import List, Literal
+from typing import Literal
 
 import importlib.util
 import os
@@ -92,11 +92,11 @@ def vcf_reference_import(
     reference_storage_path: Path = typer.Argument(
         help="Where to store the references.",
     ),
-    included_chromosomes: List[str] = typer.Option(
+    included_chromosomes: str = typer.Option(
         None,
         "--included_chromosomes",
         "-c",
-        help="List of chromosomes to extract from reference, if not specified all will be imported",
+        help="CSV list of chromosomes to extract from reference, if not specified all will be imported",
     ),
 ) -> None:
     """
@@ -105,7 +105,7 @@ def vcf_reference_import(
     Parameters:
         reference_file_path (Path): Path to reference fasta file.
         reference_storage_path (Path): Where to store the references.
-        included_chromosomes (Optional[List[str]], optional): List of chromosomes
+        included_chromosomes (Optional[str], optional): CSV list of chromosomes
             to extract from reference. If not specified, all will be imported.
 
     Example:
@@ -122,6 +122,7 @@ def vcf_reference_import(
 
     print(f"Importing reference {reference_file_path}")
     if included_chromosomes:
+        included_chromosomes = included_chromosomes.split(",")
         print(
             f"Importing {len(included_chromosomes)} chromosomes from reference {reference_file_path}: {', '.join(included_chromosomes)}"
         )
