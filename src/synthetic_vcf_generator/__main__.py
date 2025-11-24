@@ -144,7 +144,7 @@ def vcf_reference_import(
 def main(
     synthetic_vcf_path: Path = typer.Option(
         None,
-        "--synthetic-vcf_path",
+        "--synthetic-vcf-path",
         "-o",
         help="Path to synthetic vcf file. Use -e to disambiguate .gz compression type.",
     ),
