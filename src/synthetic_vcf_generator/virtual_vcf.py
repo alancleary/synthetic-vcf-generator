@@ -73,13 +73,27 @@ class VirtualVCF:
         self._setup_reference_data()
         self._generate_samples()
 
+    def _get_chromosome_length(self, chromosome, reference_data=None):
+        if reference_data is None and self.reference_dir:
+            chromosome_file = self.reference_files[chromosome]
+            reference_data = vcf_reference.load_reference_data(chromosome_file)
+            reference_data.open()
+        if reference_data:
+            return reference_data.ref_length()
+        # TODO: this is a magic number
+        return self.num_rows * 100
+
     def _generate_vcf_header(self):
         """
         Generates the VCF header.
         """
         # Lines included in every header
-        # TODO: include length, etc when using reference_dir
-        contigs = "\n".join([f"##contig=<ID={c}>" for c in self.chromosomes])
+        contigs = "\n".join(
+            [
+                f"##contig=<ID={c},length={self._get_chromosome_length(c)}>"
+                for c in self.chromosomes
+            ]
+        )
         header_lines = [
             "##fileformat=VCFv4.2",
             f"##source=VirtualVCF {version}",
@@ -269,15 +283,13 @@ class VirtualVCF:
         yield self._generate_vcf_header()
         # Generate VCF rows for each chromosome
         for chromosome in self.chromosomes:
-            # TODO: this is a magic number
-            chromosome_length = self.num_rows * 100
             # Load the chromosome's reference file
             reference_data = None
             if self.reference_dir:
                 chromosome_file = self.reference_files[chromosome]
                 reference_data = vcf_reference.load_reference_data(chromosome_file)
                 reference_data.open()
-                chromosome_length = reference_data.ref_length()
+            chromosome_length = self._get_chromosome_length(chromosome, reference_data)
             # Generate and sort positions
             positions = self.random.sample(range(1, chromosome_length), self.num_rows)
             positions.sort()
