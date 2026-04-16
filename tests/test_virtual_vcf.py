@@ -289,3 +289,14 @@ def test_virtual_vcf_novel_data(ref_dir):
     orig_data = get_vcf_data(virtual_vcf=orig_virtual_vcf)
     new_data = get_vcf_data(virtual_vcf=new_virtual_vcf)
     assert orig_data != new_data
+
+
+@pytest.mark.generate_vcf
+def test_virtual_vcf_invalid_id_type():
+    with pytest.raises(ValueError, match="Unexpected sample ID type"):
+        VirtualVCF(
+            num_rows=1,
+            num_samples=1,
+            chromosomes=["chr1"],
+            id_type="bogus",
+        )
