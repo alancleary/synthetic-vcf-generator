@@ -31,8 +31,8 @@ class ReferenceData:
     def ref_length(self):
         return self.mmap_obj.size()
 
-    def get_ref_at_pos(self, position):
-        return self.mmap_obj[position : position + 1].decode(encoding="utf-8")
+    def get_ref_at_pos(self, position, length=1):
+        return self.mmap_obj[position : position + length].decode(encoding="utf-8")
 
 
 def load_reference_data(reference_file):

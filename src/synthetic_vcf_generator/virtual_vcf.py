@@ -9,7 +9,7 @@ from typing import List, Literal
 
 import fastrand
 
-from synthetic_vcf_generator import vcf_reference, version
+from synthetic_vcf_generator import vcf_reference, variant_types, version
 
 
 class VirtualVCF:
@@ -24,6 +24,9 @@ class VirtualVCF:
         phased: bool | None = True,
         large_format: bool | None = True,
         reference_dir: str | Path | None = None,
+        type_weights: dict[str, int] | None = None,
+        indel_weights: dict[str, int] | None = None,
+        sv_weights: dict[str, int] | None = None,
     ):
         """
         Initialize VirtualVCF object.
@@ -38,6 +41,12 @@ class VirtualVCF:
             phased (bool, optional): Phased or unphased genotypes. Defaults to True.
             large_format (bool, optional): Use large format VCF. Defaults to True.
             reference_dir (str or Path, optional): Path to reference file directory.
+            type_weights (dict, optional): Top-level variant distribution. Defaults to
+                variant_types.DEFAULT_TYPE_WEIGHTS.
+            indel_weights (dict, optional): Indel sub-distribution. Defaults to
+                variant_types.DEFAULT_INDEL_WEIGHTS.
+            sv_weights (dict, optional): SV sub-distribution. Defaults to
+                variant_types.DEFAULT_SV_WEIGHTS.
 
         Raises:
             ValueError: If num_samples or num_rows is less than 1.
@@ -63,11 +72,26 @@ class VirtualVCF:
             fastrand.pcg32_seed(random_seed)
         self.large_format = large_format
         self.fmt = "GT:AD:DP:GQ:PL" if large_format else "GT"
-        self.info = f"DP=10;AF=0.5;NS={num_samples}"
+        self.base_info = f"DP=10;AF=0.5;NS={num_samples}"
         self.reference_dir = Path(reference_dir) if reference_dir else None
         self.reference_files = {}
         self.reference_metadata = {}
         self.alleles = ["A", "C", "G", "T"]
+        self.type_weights = (
+            dict(type_weights)
+            if type_weights is not None
+            else dict(variant_types.DEFAULT_TYPE_WEIGHTS)
+        )
+        self.indel_weights = (
+            dict(indel_weights)
+            if indel_weights is not None
+            else dict(variant_types.DEFAULT_INDEL_WEIGHTS)
+        )
+        self.sv_weights = (
+            dict(sv_weights)
+            if sv_weights is not None
+            else dict(variant_types.DEFAULT_SV_WEIGHTS)
+        )
 
         # Setup
         self._setup_reference_data()
@@ -115,6 +139,10 @@ class VirtualVCF:
                 '##FORMAT=<ID=PL,Number=G,Type=Integer,Description="Phred-scaled genotype Likelihoods">',
             ]
 
+        # Add SV-specific lines only when SVs may be emitted
+        if self.type_weights.get("sv", 0) > 0:
+            header_lines += list(variant_types.SV_HEADER_LINES)
+
         # Add column line
         columns = [
             "#CHROM",
@@ -141,43 +169,43 @@ class VirtualVCF:
         header = "\n".join(header_lines) + "\n"
         return header
 
-    def _get_ref_alt_at_position(self, position, reference_data):
-        """
-        Retrieves the reference value at a given position if it exists in reference data
-        or returns the allele at the given index.
-        """
-        ref_index = fastrand.pcg32randint(0, 3)
-        allele_index = fastrand.pcg32randint(1, 3)
-        if reference_data:
-            ref = reference_data.get_ref_at_pos(position - 1)
-        else:
-            ref = self.alleles[ref_index]
-        if ref in self.alleles:
-            alt = self.alleles[self.alleles.index(ref) - allele_index]
-        else:
-            alt = self.alleles[ref_index - allele_index]
-        return ref, alt
+    def _build_info(self, info_extra):
+        """Combine the base INFO string with per-row extras."""
+        if not info_extra:
+            return self.base_info
+        extras = ";".join(f"{k}={v}" for k, v in info_extra.items())
+        return f"{self.base_info};{extras}"
 
-    def _generate_vcf_row(self, chromosome, position, reference_data):
+    def _generate_vcf_row(
+        self, chromosome, position, chromosome_length, reference_data
+    ):
         """
         Generates a VCF row.
         """
         # Generate random values for each field in the VCF row
         # TODO: make ID strategy configurable via CLI
         vid = "."
-        ref, alt = self._get_ref_alt_at_position(position, reference_data)
+        kind = variant_types.pick_variant_kind(
+            self.type_weights, self.indel_weights, self.sv_weights, self.random
+        )
+        # Fall back to SNP if the drawn variant could exceed the chromosome
+        if position + variant_types.max_variant_length(kind) > chromosome_length:
+            kind = "snp"
+        ref, alt, info_extra = variant_types.VARIANT_GENERATORS[kind](
+            position, reference_data
+        )
         qual = f"{fastrand.pcg32randint(10, 100)}"
         # TODO: add support for other filters and make configurable via CLI
         # filter = self.random.choice(["PASS"])
         filter = "PASS"
-        # TODO: copmute info rather than using static values
+        info = self._build_info(info_extra)
 
         # Random select a sample rotation
         self.available_samples.rotate(fastrand.pcg32randint(1, self.max_rotation))
         samples = "\t".join(self.available_samples.copy())
 
         # Make the row
-        row = f"{chromosome}\t{position}\t{vid}\t{ref}\t{alt}\t{qual}\t{filter}\t{self.info}\t{self.fmt}\t{samples}\n"
+        row = f"{chromosome}\t{position}\t{vid}\t{ref}\t{alt}\t{qual}\t{filter}\t{info}\t{self.fmt}\t{samples}\n"
 
         return row
 
@@ -295,6 +323,8 @@ class VirtualVCF:
             positions.sort()
             # Generate a VCF row for each position
             for p in positions:
-                yield self._generate_vcf_row(chromosome, p, reference_data)
+                yield self._generate_vcf_row(
+                    chromosome, p, chromosome_length, reference_data
+                )
             if reference_data:
                 reference_data.close()

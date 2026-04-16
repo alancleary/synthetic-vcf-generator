@@ -466,3 +466,170 @@ def test_cli_generate_batch_seed(tmp_path):
         )
 
     assert read_body(out_a) == read_body(out_b)
+
+
+# --- variant-type CLI tests ----------------------------------------------
+
+
+@pytest.mark.generate_vcf
+def test_cli_default_emits_non_snp_variants():
+    result = runner.invoke(app, [GENERATE_CMD, "--seed", "42", "-r", "200"])
+    assert result.exit_code == 0
+    # With the default mix, 200 rows almost certainly contain some non-SNP variants
+    data_rows = [r for r in result.stdout.split("\n") if r.startswith("chr")]
+    alts = [r.split("\t")[4] for r in data_rows]
+    assert any("<" in a for a in alts) or any(len(a) > 1 for a in alts)
+
+
+@pytest.mark.generate_vcf
+def test_cli_snp_only_pin():
+    result = runner.invoke(
+        app, [GENERATE_CMD, "--seed", "42", "-r", "200", "--type-weights", "snp=100"]
+    )
+    assert result.exit_code == 0
+    data_rows = [r for r in result.stdout.split("\n") if r.startswith("chr")]
+    for r in data_rows:
+        fields = r.split("\t")
+        ref, alt = fields[3], fields[4]
+        assert len(ref) == 1 and len(alt) == 1
+        assert ref in "ACGT" and alt in "ACGT"
+
+
+@pytest.mark.generate_vcf
+def test_cli_sv_only_inv():
+    # With no reference, chromosome_length = num_rows * 100. Use a large -r so
+    # most SVs fit; positions drawn near the chromosome end will fall back to
+    # SNPs, but every *symbolic* ALT emitted must be <INV>.
+    result = runner.invoke(
+        app,
+        [
+            GENERATE_CMD,
+            "--seed",
+            "42",
+            "-r",
+            "1000",
+            "--type-weights",
+            "sv=100",
+            "--sv-weights",
+            "inv=100",
+        ],
+    )
+    assert result.exit_code == 0
+    data_rows = [r for r in result.stdout.split("\n") if r.startswith("chr")]
+    assert len(data_rows) == 1000
+    sv_rows = [r for r in data_rows if "<" in r.split("\t")[4]]
+    assert len(sv_rows) > 0  # some SVs must be emitted
+    for r in sv_rows:
+        fields = r.split("\t")
+        assert fields[4] == "<INV>"
+        assert "SVTYPE=INV" in fields[7]
+        assert "SVLEN=" in fields[7]
+        assert "END=" in fields[7]
+
+
+@pytest.mark.generate_vcf
+def test_cli_indel_only_ins():
+    result = runner.invoke(
+        app,
+        [
+            GENERATE_CMD,
+            "--seed",
+            "42",
+            "-r",
+            "50",
+            "--type-weights",
+            "indel=100",
+            "--indel-weights",
+            "ins=100",
+        ],
+    )
+    assert result.exit_code == 0
+    data_rows = [r for r in result.stdout.split("\n") if r.startswith("chr")]
+    for r in data_rows:
+        fields = r.split("\t")
+        ref, alt = fields[3], fields[4]
+        assert len(ref) == 1
+        assert len(alt) > 1
+        assert alt[0] == ref
+
+
+@pytest.mark.generate_vcf
+def test_cli_sv_header_gated_on_weight():
+    # snp=100 → no SV header lines
+    r_snp = runner.invoke(
+        app, [GENERATE_CMD, "--seed", "42", "-r", "1", "--type-weights", "snp=100"]
+    )
+    assert "##ALT=<ID=DEL" not in r_snp.stdout
+    assert "##INFO=<ID=SVTYPE" not in r_snp.stdout
+
+    # Any sv weight > 0 → SV header lines present
+    r_mix = runner.invoke(
+        app,
+        [
+            GENERATE_CMD,
+            "--seed",
+            "42",
+            "-r",
+            "1",
+            "--type-weights",
+            "snp=50,mnp=0,indel=0,sv=50",
+        ],
+    )
+    assert "##ALT=<ID=DEL" in r_mix.stdout
+    assert "##INFO=<ID=SVTYPE" in r_mix.stdout
+
+
+@pytest.mark.generate_vcf
+@pytest.mark.parametrize(
+    ("flag", "value", "match"),
+    [
+        ("--type-weights", "snp=80,mnp=5,indel=10", "sum to 100"),
+        ("--type-weights", "snp=90,indel=15", "sum to 100"),
+        ("--type-weights", "snp=50.5,mnp=49.5", "integer"),
+        ("--type-weights", "foo=100", "Unknown weight key"),
+        ("--type-weights", "snp=-5,mnp=105", "non-negative"),
+        ("--type-weights", "snp100", "expected 'key=value'"),
+        ("--indel-weights", "ins=50", "sum to 100"),
+        ("--sv-weights", "del=100,ins=0,dup=0,inv=1", "sum to 100"),
+    ],
+)
+def test_cli_invalid_weights_error(flag, value, match):
+    result = runner.invoke(app, [GENERATE_CMD, flag, value])
+    assert result.exit_code != 0
+    assert isinstance(result.exception, ValueError)
+    assert match in str(result.exception)
+
+
+@pytest.mark.generate_batch
+def test_cli_generate_batch_weights_plumbing(tmp_path):
+    out_dir = tmp_path / "batch"
+    result = runner.invoke(
+        app,
+        [
+            GENERATE_BATCH_CMD,
+            "-d",
+            out_dir.as_posix(),
+            "-n",
+            "1",
+            "-r",
+            "1000",
+            "-t",
+            "1",
+            "--seed",
+            "42",
+            "--type-weights",
+            "sv=100",
+            "--sv-weights",
+            "del=100",
+        ],
+    )
+    assert result.exit_code == 0
+    [vcf_file] = list(out_dir.glob("*.vcf"))
+    content = vcf_file.read_text()
+    data_rows = [r for r in content.split("\n") if r.startswith("chr")]
+    assert len(data_rows) == 1000
+    sv_rows = [r for r in data_rows if "<" in r.split("\t")[4]]
+    assert len(sv_rows) > 0
+    for r in sv_rows:
+        fields = r.split("\t")
+        assert fields[4] == "<DEL>"

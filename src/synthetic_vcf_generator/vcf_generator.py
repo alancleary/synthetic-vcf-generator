@@ -90,6 +90,9 @@ def synthetic_vcf_data(
     phased,
     large_format,
     reference_dir_path,
+    type_weights=None,
+    indel_weights=None,
+    sv_weights=None,
 ):
     """
     Generates synthetic VCF data and writes it to either a file or standard output.
@@ -106,6 +109,9 @@ def synthetic_vcf_data(
         phased (bool): Phased or unphased genotypes.
         large_format (bool): Use large format VCF.
         reference_dir_path (Path or None): Path to imported reference data.
+        type_weights (dict or None): Top-level variant distribution.
+        indel_weights (dict or None): Indel sub-distribution.
+        sv_weights (dict or None): SV sub-distribution.
     """
     virtual_vcf = VirtualVCF(
         num_rows=num_rows,
@@ -117,6 +123,9 @@ def synthetic_vcf_data(
         phased=phased,
         large_format=large_format,
         reference_dir=reference_dir_path,
+        type_weights=type_weights,
+        indel_weights=indel_weights,
+        sv_weights=sv_weights,
     )
 
     if synthetic_vcf_path is None:
@@ -140,6 +149,9 @@ def batch_synthetic_vcf_data(
     large_format,
     reference_dir_path,
     num_threads,
+    type_weights=None,
+    indel_weights=None,
+    sv_weights=None,
 ):
     """
     Generates synthetic VCF data and writes it to either a file or standard output.
@@ -159,6 +171,9 @@ def batch_synthetic_vcf_data(
         large_format (bool): Use large format VCF.
         reference_dir_path (Path or None): Path to imported reference data.
         num_threads (int): Number of threads.
+        type_weights (dict or None): Top-level variant distribution.
+        indel_weights (dict or None): Indel sub-distribution.
+        sv_weights (dict or None): SV sub-distribution.
     """
 
     if not synthetic_vcf_dir.exists():
@@ -174,6 +189,9 @@ def batch_synthetic_vcf_data(
         phased=phased,
         large_format=large_format,
         reference_dir=reference_dir_path,
+        type_weights=type_weights,
+        indel_weights=indel_weights,
+        sv_weights=sv_weights,
     )
 
     ext = ".vcf.gz" if output_type in {"gzip", "bgzip"} else ".vcf"

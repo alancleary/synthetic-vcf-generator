@@ -89,3 +89,41 @@ def test_vcf_file_validation(cli_args: tuple, tmp_path):
         "According to the VCF specification, the input file is valid"
         in validation_result
     )
+
+
+@pytest.mark.generate_vcf
+@pytest.mark.parametrize(
+    "type_weights",
+    [
+        "snp=100",
+        "snp=50,mnp=10,indel=20,sv=20",
+        "sv=100",
+        "mnp=100",
+    ],
+)
+def test_vcf_file_validation_multi_type(type_weights, tmp_path):
+    vcf_file_path = (
+        tmp_path / f"mixed_{type_weights.replace('=', '_').replace(',', '-')}.vcf"
+    )
+    args = [
+        GENERATE_CMD,
+        "--seed",
+        "42",
+        "-r",
+        "200",
+        "--type-weights",
+        type_weights,
+        "-o",
+        vcf_file_path.as_posix(),
+    ]
+    result = runner.invoke(app, args=args)
+    assert result.exit_code == 0
+
+    validator_status, validation_result = run_vcf_validator(
+        vcf_file_path=vcf_file_path, result_path=tmp_path
+    )
+    assert validator_status.returncode == 0
+    assert (
+        "According to the VCF specification, the input file is valid"
+        in validation_result
+    )

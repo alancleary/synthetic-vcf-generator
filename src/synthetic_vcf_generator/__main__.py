@@ -8,7 +8,7 @@ from pathlib import Path
 import typer
 from rich.console import Console
 
-from synthetic_vcf_generator import version
+from synthetic_vcf_generator import variant_types, version
 from synthetic_vcf_generator.vcf_generator import (
     batch_synthetic_vcf_data,
     synthetic_vcf_data,
@@ -180,6 +180,32 @@ def main(
     ),
     phased: bool = typer.Option(default=True, help="Simulate phased"),
     large_format: bool = typer.Option(default=True, help="Write large format vcf"),
+    type_weights: str = typer.Option(
+        None,
+        "--type-weights",
+        help=(
+            "Top-level variant distribution as a CSV of key=integer pairs that must "
+            "sum to 100. Valid keys: snp, mnp, indel, sv. "
+            "Default: snp=80,mnp=5,indel=10,sv=5."
+        ),
+    ),
+    indel_weights: str = typer.Option(
+        None,
+        "--indel-weights",
+        help=(
+            "Indel sub-distribution as a CSV of key=integer pairs that must sum "
+            "to 100. Valid keys: ins, del. Default: ins=50,del=50."
+        ),
+    ),
+    sv_weights: str = typer.Option(
+        None,
+        "--sv-weights",
+        help=(
+            "Structural variant sub-distribution as a CSV of key=integer pairs "
+            "that must sum to 100. Valid keys: del, ins, dup, inv. "
+            "Default: del=40,ins=20,dup=20,inv=20."
+        ),
+    ),
     print_version: bool = typer.Option(
         None,
         "--version",
@@ -209,11 +235,29 @@ def main(
         id_type (str): Type of unique ID to use for samples.
         phased (bool): Simulate phased genotypes.
         large_format (bool): Write large format VCF.
+        type_weights (str): Top-level variant distribution CSV.
+        indel_weights (str): Indel sub-distribution CSV.
+        sv_weights (str): SV sub-distribution CSV.
         print_version (bool): Flag to print the version of the synthetic-vcf-generator package.
         reference_dir (Path): Path to directory containing imported reference_data.
     """
     output_type = parse_output_type(synthetic_vcf_path, output_type)
     chromosomes = chromosomes.split(",")
+    type_weights_dict = variant_types.parse_weights(
+        type_weights,
+        variant_types.VALID_TYPE_KEYS,
+        variant_types.DEFAULT_TYPE_WEIGHTS,
+    )
+    indel_weights_dict = variant_types.parse_weights(
+        indel_weights,
+        variant_types.VALID_INDEL_KEYS,
+        variant_types.DEFAULT_INDEL_WEIGHTS,
+    )
+    sv_weights_dict = variant_types.parse_weights(
+        sv_weights,
+        variant_types.VALID_SV_KEYS,
+        variant_types.DEFAULT_SV_WEIGHTS,
+    )
     synthetic_vcf_data(
         synthetic_vcf_path=synthetic_vcf_path,
         output_type=output_type,
@@ -226,6 +270,9 @@ def main(
         phased=phased,
         large_format=large_format,
         reference_dir_path=reference_dir,
+        type_weights=type_weights_dict,
+        indel_weights=indel_weights_dict,
+        sv_weights=sv_weights_dict,
     )
 
 
@@ -282,6 +329,32 @@ def generate_batch(
     ),
     phased: bool = typer.Option(default=True, help="Simulate phased"),
     large_format: bool = typer.Option(default=True, help="Write large format vcf"),
+    type_weights: str = typer.Option(
+        None,
+        "--type-weights",
+        help=(
+            "Top-level variant distribution as a CSV of key=integer pairs that must "
+            "sum to 100. Valid keys: snp, mnp, indel, sv. "
+            "Default: snp=80,mnp=5,indel=10,sv=5."
+        ),
+    ),
+    indel_weights: str = typer.Option(
+        None,
+        "--indel-weights",
+        help=(
+            "Indel sub-distribution as a CSV of key=integer pairs that must sum "
+            "to 100. Valid keys: ins, del. Default: ins=50,del=50."
+        ),
+    ),
+    sv_weights: str = typer.Option(
+        None,
+        "--sv-weights",
+        help=(
+            "Structural variant sub-distribution as a CSV of key=integer pairs "
+            "that must sum to 100. Valid keys: del, ins, dup, inv. "
+            "Default: del=40,ins=20,dup=20,inv=20."
+        ),
+    ),
     print_version: bool = typer.Option(
         None,
         "--version",
@@ -316,12 +389,30 @@ def generate_batch(
         id_type (str): Type of unique ID to use for samples ("count", "padded_count", or "uuid").
         phased (bool): Simulate phased genotypes.
         large_format (bool): Write large format VCF.
+        type_weights (str): Top-level variant distribution CSV.
+        indel_weights (str): Indel sub-distribution CSV.
+        sv_weights (str): SV sub-distribution CSV.
         print_version (bool): Flag to print the version of the synthetic-vcf-generator package.
         reference_dir (Path): Path to directory containing imported reference_data.
         num_threads (int): Number of threads.
     """
     output_type = parse_output_type(None, output_type)
     chromosomes = chromosomes.split(",")
+    type_weights_dict = variant_types.parse_weights(
+        type_weights,
+        variant_types.VALID_TYPE_KEYS,
+        variant_types.DEFAULT_TYPE_WEIGHTS,
+    )
+    indel_weights_dict = variant_types.parse_weights(
+        indel_weights,
+        variant_types.VALID_INDEL_KEYS,
+        variant_types.DEFAULT_INDEL_WEIGHTS,
+    )
+    sv_weights_dict = variant_types.parse_weights(
+        sv_weights,
+        variant_types.VALID_SV_KEYS,
+        variant_types.DEFAULT_SV_WEIGHTS,
+    )
     batch_synthetic_vcf_data(
         synthetic_vcf_dir=synthetic_vcf_dir,
         output_type=output_type,
@@ -337,6 +428,9 @@ def generate_batch(
         large_format=large_format,
         reference_dir_path=reference_dir,
         num_threads=num_threads,
+        type_weights=type_weights_dict,
+        indel_weights=indel_weights_dict,
+        sv_weights=sv_weights_dict,
     )
 
 

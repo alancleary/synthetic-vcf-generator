@@ -300,3 +300,54 @@ def test_virtual_vcf_invalid_id_type():
             chromosomes=["chr1"],
             id_type="bogus",
         )
+
+
+@pytest.mark.generate_vcf
+def test_virtual_vcf_sv_header_present_when_sv_weight_positive():
+    virtual_vcf = VirtualVCF(
+        num_rows=1,
+        num_samples=2,
+        chromosomes=["chr1"],
+        random_seed=42,
+        type_weights={"snp": 50, "mnp": 0, "indel": 0, "sv": 50},
+    )
+    _, header = get_vcf_data(virtual_vcf=virtual_vcf)
+    assert "##ALT=<ID=DEL" in header
+    assert "##INFO=<ID=SVTYPE" in header
+    assert "##INFO=<ID=SVLEN" in header
+
+
+@pytest.mark.generate_vcf
+def test_virtual_vcf_sv_header_absent_when_sv_weight_zero():
+    virtual_vcf = VirtualVCF(
+        num_rows=1,
+        num_samples=2,
+        chromosomes=["chr1"],
+        random_seed=42,
+        type_weights={"snp": 100, "mnp": 0, "indel": 0, "sv": 0},
+    )
+    _, header = get_vcf_data(virtual_vcf=virtual_vcf)
+    assert "##ALT=<ID=DEL" not in header
+    assert "##INFO=<ID=SVTYPE" not in header
+
+
+@pytest.mark.generate_vcf
+def test_virtual_vcf_chromosome_end_fallback():
+    # num_rows=1 and no reference means chromosome_length = 1*100 = 100.
+    # SV DEL has a max span of 10_001 bases, well beyond the chromosome end,
+    # so every row must fall back to SNP.
+    virtual_vcf = VirtualVCF(
+        num_rows=1,
+        num_samples=2,
+        chromosomes=["chr1"],
+        random_seed=42,
+        type_weights={"snp": 0, "mnp": 0, "indel": 0, "sv": 100},
+        sv_weights={"del": 100, "ins": 0, "dup": 0, "inv": 0},
+    )
+    data_rows, _ = get_vcf_data(virtual_vcf=virtual_vcf)
+    chrom_rows = [r for r in data_rows if r.startswith("chr1")]
+    assert len(chrom_rows) == 1
+    fields = chrom_rows[0].split("\t")
+    assert len(fields[3]) == 1  # ref
+    assert len(fields[4]) == 1  # alt
+    assert fields[4] in "ACGT"

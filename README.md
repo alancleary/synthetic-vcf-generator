@@ -34,11 +34,46 @@ For more details run:
 synthetic-vcf-generator generate --help
 ```
 
+#### Variant type distribution
+
+The generator emits a mix of SNPs, MNPs, indels (INS/DEL), and SVs (DEL/INS/DUP/INV) controlled by three flags.
+Each flag accepts a CSV of `key=integer` pairs whose values must sum to exactly 100.
+Unspecified keys within a flag default to 0, and unknown keys are rejected.
+
+| Flag | Default | Valid keys |
+|---|---|---|
+| `--type-weights` | `snp=80,mnp=5,indel=10,sv=5` | `snp`, `mnp`, `indel`, `sv` |
+| `--indel-weights` | `ins=50,del=50` | `ins`, `del` |
+| `--sv-weights` | `del=40,ins=20,dup=20,inv=20` | `del`, `ins`, `dup`, `inv` |
+
+SV-specific header lines (`##ALT=<ID=...>`, `##INFO=<ID=SVTYPE,...>`, `##INFO=<ID=END,...>`, `##INFO=<ID=SVLEN,...>`) are emitted only when the `sv` weight is greater than 0.
+
+Examples:
+```shell
+# SNP-only output
+synthetic-vcf-generator generate --type-weights snp=100
+
+# Skew the default mix
+synthetic-vcf-generator generate --type-weights snp=50,mnp=10,indel=20,sv=20
+
+# 100% insertions (ignores del sub-weight)
+synthetic-vcf-generator generate --type-weights indel=100 --indel-weights ins=100
+
+# 100% inversions
+synthetic-vcf-generator generate --type-weights sv=100 --sv-weights inv=100
+```
+
+Size ranges are fixed in this version:
+- MNP: 2–5 bp
+- Indel (small INS/DEL): 1–50 bp
+- SV (DEL/INS/DUP/INV): 50–10,000 bp
+
 ### `generate-batch`
 
 This command generates a collection of VCF files and writes them to a user-defined directory.
 The filename of each file generated will be a UUID with an optional user-defined prefix.
 By default it generates random values for the REF column, but it can use a reference genome imported with the `import-reference` command to use real REF values instead.
+The `--type-weights`, `--indel-weights`, and `--sv-weights` flags described under `generate` are accepted by this command as well.
 For more details run:
 ```shell
 synthetic-vcf-generator generate-batch --help
