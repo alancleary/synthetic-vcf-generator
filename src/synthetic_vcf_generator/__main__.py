@@ -66,19 +66,15 @@ def parse_output_type(synthetic_vcf_path: Path | None, output_type: str | None):
             if ext == ".vcf":
                 output_type = "vcf"
             else:
-                try:
-                    importlib.util.find_spec("Bio")
-                    output_type = "bgzip"
-                except ImportError:
+                if importlib.util.find_spec("Bio") is None:
                     output_type = "gzip"
+                else:
+                    output_type = "bgzip"
     elif output_type:
-        if output_type == "bgzip":
-            try:
-                importlib.util.find_spec("Bio")
-            except ImportError:
-                raise ValueError(
-                    'Output type "bgzip" requires Biopython optional dependency'
-                )
+        if output_type == "bgzip" and importlib.util.find_spec("Bio") is None:
+            raise ValueError(
+                'Output type "bgzip" requires Biopython optional dependency'
+            )
     else:
         output_type = "vcf"
     return output_type

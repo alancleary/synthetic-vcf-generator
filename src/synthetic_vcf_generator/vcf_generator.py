@@ -35,17 +35,14 @@ def write_fileobj(
             for line in v_vcf:
                 gzip_file.write(line.encode(encoding="utf-8"))
     elif output_type == "bgzip":
-        try:
-            from Bio import bgzf
+        from Bio import bgzf
 
-            with (
-                bgzf.BgzfWriter(fileobj=fileobj, mode="wt") as bgzip_file,
-                virtual_vcf as v_vcf,
-            ):
-                for line in v_vcf:
-                    bgzip_file.write(line)
-        except ImportError:
-            raise RuntimeError(f"{output_type=} requires Biopython")
+        with (
+            bgzf.BgzfWriter(fileobj=fileobj, mode="wt") as bgzip_file,
+            virtual_vcf as v_vcf,
+        ):
+            for line in v_vcf:
+                bgzip_file.write(line)
     else:
         raise ValueError(f"{output_type=} not supported")
 
