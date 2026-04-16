@@ -83,6 +83,24 @@ Tests can be run with:
 pytest
 ```
 
+#### Code Coverage
+
+[Coverage.py](https://coverage.readthedocs.io/) is included as a dev dependency.
+To measure code coverage while running the test suite:
+```shell
+coverage run -m pytest
+```
+
+After the run completes, view a summary report in the terminal:
+```shell
+coverage report
+```
+
+Or generate a browsable HTML report in `./htmlcov`:
+```shell
+coverage html
+```
+
 ### Linting and Formatting
 
 Linting and formatting are automatically applied via [pre-commit](https://pre-commit.com/) hooks.
